@@ -9,8 +9,10 @@ export MAMBA_ROOT_PREFIX="$HOME/.local/share/mamba"
 if [[ ! -x "$micromamba" ]]; then
   temp_dir="$(mktemp -d)"
   trap 'rm -rf "$temp_dir"' EXIT
-  curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest \
-    | tar -xj -C "$temp_dir" bin/micromamba
+  archive="$temp_dir/micromamba.tar.bz2"
+  curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest -o "$archive"
+  python3 -c 'import sys, tarfile; tarfile.open(sys.argv[1]).extract("bin/micromamba", sys.argv[2])' \
+    "$archive" "$temp_dir"
   mkdir -p "$(dirname "$micromamba")"
   install -m 0755 "$temp_dir/bin/micromamba" "$micromamba"
 fi
