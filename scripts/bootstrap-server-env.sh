@@ -18,7 +18,9 @@ if [[ ! -x "$micromamba" ]]; then
 fi
 
 if ! "$micromamba" env list | awk '{print $1}' | grep -Fxq "$env_name"; then
-  "$micromamba" create -y -n "$env_name" -c conda-forge python=3.11 pip
+  "$micromamba" create -y -n "$env_name" -c conda-forge python=3.10 pip
+else
+  "$micromamba" install -y -n "$env_name" -c conda-forge python=3.10 pip
 fi
 
 "$micromamba" run -n "$env_name" python -m pip install --upgrade pip

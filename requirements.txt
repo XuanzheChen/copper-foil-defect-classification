@@ -1,4 +1,4 @@
-# Runtime dependencies for copper-foil classification on the current server.
+# Runtime dependencies for copper-foil classification on Python 3.10.
 # PyTorch is installed separately by scripts/bootstrap-server-env.sh so the
 # CUDA 12.8 wheel index can be selected explicitly for the RTX 5080.
 timm==0.6.12
