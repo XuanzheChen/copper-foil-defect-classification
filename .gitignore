@@ -33,3 +33,7 @@ apex/
 .DS_Store
 Thumbs.db
 
+# Local server connection settings and downloaded experiment logs
+.server.json
+downloaded-logs/
+experiments/
