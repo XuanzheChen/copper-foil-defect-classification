@@ -1,0 +1,10 @@
+# Archived software stack from the original copper-foil project.
+# It does not support the RTX 5080 server and is retained for reference only.
+torch==1.9.0
+torchvision==0.10.0
+timm==0.6.12
+numpy==1.23.5
+Pillow==9.5.0
+opencv-python==4.8.1.78
+tensorboardX==2.6.2.2
+submitit==1.5.1

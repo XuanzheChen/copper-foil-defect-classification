@@ -1,14 +1,12 @@
-# Reproduces the software stack used by the original copper-foil project.
-# Install a CUDA-compatible PyTorch wheel for the target machine if needed.
-torch==1.9.0
-torchvision==0.10.0
+# Runtime dependencies for copper-foil classification on the current server.
+# PyTorch is installed separately by scripts/bootstrap-server-env.sh so the
+# CUDA 12.8 wheel index can be selected explicitly for the RTX 5080.
 timm==0.6.12
-numpy==1.23.5
-Pillow==9.5.0
-opencv-python==4.8.1.78
+numpy==1.26.4
+Pillow==10.4.0
+opencv-python-headless==4.10.0.84
 tensorboardX==2.6.2.2
 submitit==1.5.1
 
 # Optional: only required for FCMAE self-supervised pretraining.
 # Install separately from https://github.com/NVIDIA/MinkowskiEngine
-
