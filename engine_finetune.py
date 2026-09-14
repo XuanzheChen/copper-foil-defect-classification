@@ -17,11 +17,14 @@ from timm.utils import accuracy, ModelEma
 import utils
 from utils import adjust_learning_rate
 
+from collections import defaultdict
+import time
+
 def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
                     device: torch.device, epoch: int, loss_scaler, max_norm: float = 0,
                     model_ema: Optional[ModelEma] = None, mixup_fn: Optional[Mixup] = None, 
-                    log_writer=None, args=None):
+                    log_writer=None, args=None, freeze_backbone: bool = False):
     model.train(True)
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -58,7 +61,6 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             assert math.isfinite(loss_value)
 
         if use_amp:
-            # this attribute is added by timm on one optimizer (adahessian)
             is_second_order = hasattr(optimizer, 'is_second_order') and optimizer.is_second_order
             loss /= update_freq
             grad_norm = loss_scaler(loss, optimizer, clip_grad=max_norm,
@@ -111,20 +113,66 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 log_writer.update(grad_norm=grad_norm, head="opt")
             log_writer.set_step()
     
-    # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 @torch.no_grad()
+# def evaluate(data_loader, model, device, use_amp=False):
+#     criterion = torch.nn.CrossEntropyLoss()
+
+#     metric_logger = utils.MetricLogger(delimiter="  ")
+#     header = 'Test:'
+
+#     # switch to evaluation mode
+#     model.eval()
+
+#     for batch in metric_logger.log_every(data_loader, 10, header):
+#         images = batch[0]
+#         target = batch[-1]
+
+#         images = images.to(device, non_blocking=True)
+#         target = target.to(device, non_blocking=True)
+
+#         # compute output
+#         if use_amp:
+#             with torch.cuda.amp.autocast():
+#                 output = model(images)
+#                 if isinstance(output, dict):
+#                     output = output['logits']
+#                 loss = criterion(output, target)
+#         else:
+#             output = model(images)
+#             if isinstance(output, dict):
+#                 output = output['logits']
+#             loss = criterion(output, target)
+
+#         torch.cuda.synchronize()
+        
+#         acc1, acc5 = accuracy(output, target, topk=(1, 5))
+
+#         batch_size = images.shape[0]
+#         metric_logger.update(loss=loss.item())
+#         metric_logger.meters['acc1'].update(acc1.item(), n=batch_size)
+#         metric_logger.meters['acc5'].update(acc5.item(), n=batch_size)
+#     # gather the stats from all processes
+#     metric_logger.synchronize_between_processes()
+#     print('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
+#           .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
+
+#     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+
 def evaluate(data_loader, model, device, use_amp=False):
     criterion = torch.nn.CrossEntropyLoss()
-
     metric_logger = utils.MetricLogger(delimiter="  ")
-    header = 'Test:'
+    header = "Evaluate:"
 
-    # switch to evaluation mode
+    class_stats = defaultdict(lambda: {"total": 0, "correct": 0, "accuracy": 0})
     model.eval()
+
+    # <<< 记录开始时间
+    start_time = time.time()
+    total_images = 0
 
     for batch in metric_logger.log_every(data_loader, 10, header):
         images = batch[0]
@@ -133,30 +181,73 @@ def evaluate(data_loader, model, device, use_amp=False):
         images = images.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
-        # compute output
         if use_amp:
             with torch.cuda.amp.autocast():
                 output = model(images)
                 if isinstance(output, dict):
-                    output = output['logits']
+                    output = output["logits"]
                 loss = criterion(output, target)
         else:
             output = model(images)
             if isinstance(output, dict):
-                output = output['logits']
+                output = output["logits"]
             loss = criterion(output, target)
 
         torch.cuda.synchronize()
-        
+
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
-
         batch_size = images.shape[0]
-        metric_logger.update(loss=loss.item())
-        metric_logger.meters['acc1'].update(acc1.item(), n=batch_size)
-        metric_logger.meters['acc5'].update(acc5.item(), n=batch_size)
-    # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
-    print('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
-          .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
+        total_images += batch_size
 
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+        metric_logger.update(loss=loss.item())
+        metric_logger.meters["acc1"].update(acc1.item(), n=batch_size)
+        metric_logger.meters["acc5"].update(acc5.item(), n=batch_size)
+
+        preds = output.argmax(dim=1)
+        for cls in torch.unique(target):
+            cls_mask = target == cls
+            class_stats[cls.item()]["total"] += cls_mask.sum().item()
+            class_stats[cls.item()]["correct"] += (preds[cls_mask] == cls).sum().item()
+
+    # <<< 记录结束时间
+    total_time = time.time() - start_time
+    images_per_sec = total_images / total_time
+
+    metric_logger.synchronize_between_processes()
+    print(
+        "* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}".format(
+            top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss
+        )
+    )
+    print(f"Evaluation speed: {images_per_sec:.2f} images/s")
+
+    for cls, stats in class_stats.items():
+        if stats["total"] > 0:
+            acc = stats["correct"] / stats["total"] * 100
+        else:
+            acc = 0.0
+        stats["accuracy"] = acc
+        num_samples = stats["total"]
+        print(f"With {num_samples} samples, Class {cls}: {acc:.2f}% ")
+
+    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}, class_stats
+
+
+
+def accuracy(output, target, topk=(1,)):
+    """
+    Computes the accuracy over the k top predictions for the specified values of k.
+    """
+    with torch.no_grad():
+        maxk = max(topk)
+        batch_size = target.size(0)
+
+        _, pred = output.topk(maxk, 1, True, True)
+        pred = pred.t()
+        correct = pred.eq(target.view(1, -1).expand_as(pred))
+
+        res = []
+        for k in topk:
+            correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
+            res.append(correct_k.mul_(100.0 / batch_size))
+        return res

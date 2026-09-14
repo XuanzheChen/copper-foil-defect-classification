@@ -29,7 +29,7 @@ from engine_finetune import train_one_epoch, evaluate
 import utils
 from utils import NativeScalerWithGradNormCount as NativeScaler
 from utils import str2bool, remap_checkpoint_keys
-import models.convnextv2 as convnextv2
+import models.self.convnextv2_modified as convnextv2
 
 def get_args_parser():
     parser = argparse.ArgumentParser('FCMAE fine-tuning', add_help=False)
@@ -179,6 +179,23 @@ def get_args_parser():
     
     parser.add_argument('--use_amp', type=str2bool, default=False, 
                         help="Use apex AMP (Automatic Mixed Precision) or not")
+
+    parser.add_argument('--use_grayscale', type=str2bool, default=False, 
+                        help="Use trasforms.Grayscale or not")
+    parser.add_argument('--HSVEnhance', type=str2bool, default=False,
+                        help='Enable or disable HSV enhance during training')
+    parser.add_argument('--HSVE_factors', type=float, nargs=3, default=[0.05, 0.1, 0.1],
+                    help='HSV enhance factors as a list of floats (e.g., 0.05 0.1 0.1)')
+    parser.add_argument('--add_Gauss_Noise', type=str2bool, default=False,
+                        help='Add or not add Gauss Noise during training')
+    parser.add_argument('--GN_factors', type=float, nargs=2, default=[0, 25],
+                    help='Gauss Noise factors as a list of floats (e.g., 0 25)')
+    parser.add_argument('--load_encoder_only', type=str2bool, default=False,
+                        help='Resume only contains weights of encoder or not')
+    parser.add_argument('--freeze', type=str2bool, default=False,
+                        help='Freeze part of weights when finetuning')
+    parser.add_argument('class_labels', type=str, help="Path to class_labels.txt")
+
     return parser
 
 def main(args):
@@ -198,6 +215,36 @@ def main(args):
         dataset_val = None
     else:
         dataset_val, _ = build_dataset(is_train=False, args=args)
+
+    try:
+        if not args.class_labels.endswith('.txt'):
+            raise ValueError(f"Invalid file format: {args.class_labels}. Expected a .txt file.")
+        
+        # 读取文件内容
+        with open(args.class_labels, 'r') as f:
+            lines = f.readlines()
+            class_list = []
+            for line in lines:
+                try:
+                    _, class_name = line.strip().split(":")
+                    class_list.append(class_name)
+                except ValueError:
+                    raise ValueError(f"Invalid line format: {line.strip()}. Expected 'index:class_name'.")
+
+        if not args.eval:
+            if len(class_list) != args.nb_classes:
+                raise ValueError(f"Wrong class_label.txt: {args.class_labels} with {len(class_list)} classes! But {args.nb_classes} is right.")
+        else:
+            args.nb_classes = len(class_list)
+    except FileNotFoundError:
+        print(f"Error: File '{args.class_labels}' not found.")
+        class_list = []
+    except ValueError as e:
+        print(f"Error: {e}")
+        class_list = []
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        class_list = []
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
@@ -265,7 +312,6 @@ def main(args):
                 print(f"Removing key {k} from pretrained checkpoint")
                 del checkpoint_model[k]
         
-
         # remove decoder weights
         checkpoint_model_keys = list(checkpoint_model.keys())
         for k in checkpoint_model_keys:
@@ -281,6 +327,28 @@ def main(args):
         trunc_normal_(model.head.weight, std=2e-5)
         torch.nn.init.constant_(model.head.bias, 0.)
 
+        def freeze(model):
+            loaded_keys = set(checkpoint_model.keys())
+            
+            for name, param in model.named_parameters():
+                if (
+                    # name.startswith("stages.3") or 
+                    name not in loaded_keys or 
+                    name.startswith("head")
+                ):
+                    param.requires_grad = True
+                    print(f"Trainable: {name}")
+                else:
+                    param.requires_grad = False
+        
+        if args.freeze:
+            freeze(model)
+
+        print("\nTrainable Parameters:")
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                print(name)
+
     model.to(device)
 
     model_ema = None
@@ -294,10 +362,12 @@ def main(args):
         print("Using EMA with decay = %.8f" % args.model_ema_decay)
 
     model_without_ddp = model
-    n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    n_parameters = sum(p.numel() for p in model.parameters())
+    trainable_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     print("Model = %s" % str(model_without_ddp))
     print('number of params:', n_parameters)
+    print('number of trainable params:', trainable_parameters)
 
     eff_batch_size = args.batch_size * args.update_freq * utils.get_world_size()
     num_training_steps_per_epoch = len(dataset_train) // eff_batch_size
@@ -352,8 +422,15 @@ def main(args):
 
     if args.eval:
         print(f"Eval only mode")
-        test_stats = evaluate(data_loader_val, model, device)
-        print(f"Accuracy of the network on {len(dataset_val)} test images: {test_stats['acc1']:.5f}%")
+        val_stats, acc_info = evaluate(data_loader_val, model, device)
+        with open(os.path.join(args.output_dir, "eval-class-acc.txt"), "w")as f:
+                for cls, stats in acc_info.items():
+                    num_samples = stats["total"]
+                    acc = stats["accuracy"]
+                    class_name = class_list[cls]
+                    f.write(f"With {num_samples} samples, Class {class_name}: {acc:.2f}%\n")
+                f.write("\n")
+        print(f"Accuracy of the network on {len(dataset_val)} evaluated images: {val_stats['acc1']:.5f}%")
         return
     
     max_accuracy = 0.0
@@ -374,16 +451,25 @@ def main(args):
             log_writer=log_writer,
             args=args
         )
+        if hasattr(model, 'neck_weights'):
+            print("Neck Weights:", convnextv2.LiNormWeight(model.neck_weights).tolist())
         if args.output_dir and args.save_ckpt:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
                 utils.save_model(
                     args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                     loss_scaler=loss_scaler, epoch=epoch, model_ema=model_ema)
         if data_loader_val is not None:
-            test_stats = evaluate(data_loader_val, model, device, use_amp=args.use_amp)
-            print(f"Accuracy of the model on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
-            if max_accuracy < test_stats["acc1"]:
-                max_accuracy = test_stats["acc1"]
+            val_stats, acc_info = evaluate(data_loader_val, model, device, use_amp=args.use_amp)
+            print(f"Accuracy of the model on the {len(dataset_val)} val images: {val_stats['acc1']:.1f}%")
+            with open(os.path.join(args.output_dir, "val-class-acc.txt"), "a")as f:
+                for cls, stats in acc_info.items():
+                    num_samples = stats["total"]
+                    acc = stats["accuracy"]
+                    class_name = class_list[cls]
+                    f.write(f"With {num_samples} samples, Class {class_name}: {acc:.2f}%\n")
+                f.write("\n")
+            if max_accuracy < val_stats["acc1"]:
+                max_accuracy = val_stats["acc1"]
                 if args.output_dir and args.save_ckpt:
                     utils.save_model(
                         args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
@@ -391,33 +477,35 @@ def main(args):
             print(f'Max accuracy: {max_accuracy:.2f}%')
 
             if log_writer is not None:
-                log_writer.update(test_acc1=test_stats['acc1'], head="perf", step=epoch)
-                log_writer.update(test_acc5=test_stats['acc5'], head="perf", step=epoch)
-                log_writer.update(test_loss=test_stats['loss'], head="perf", step=epoch)
+                log_writer.update(val_acc1=val_stats['acc1'], head="perf", step=epoch)
+                log_writer.update(val_acc5=val_stats['acc5'], head="perf", step=epoch)
+                log_writer.update(val_loss=val_stats['loss'], head="perf", step=epoch)
 
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
-                         **{f'test_{k}': v for k, v in test_stats.items()},
+                         **{f'val_{k}': v for k, v in val_stats.items()},
                          'epoch': epoch,
-                         'n_parameters': n_parameters}
+                         'n_parameters': n_parameters,
+                         'trainable_parameters': trainable_parameters}
             
             # repeat testing routines for EMA, if ema eval is turned on
             if args.model_ema and args.model_ema_eval:
-                test_stats_ema = evaluate(data_loader_val, model_ema.ema, device, use_amp=args.use_amp)
-                print(f"Accuracy of the model EMA on {len(dataset_val)} test images: {test_stats_ema['acc1']:.1f}%")
-                if max_accuracy_ema < test_stats_ema["acc1"]:
-                    max_accuracy_ema = test_stats_ema["acc1"]
+                val_stats_ema, _ = evaluate(data_loader_val, model_ema.ema, device, use_amp=args.use_amp)
+                print(f"Accuracy of the model EMA on {len(dataset_val)} val images: {val_stats_ema['acc1']:.1f}%")
+                if max_accuracy_ema < val_stats_ema["acc1"]:
+                    max_accuracy_ema = val_stats_ema["acc1"]
                     if args.output_dir and args.save_ckpt:
                         utils.save_model(
                             args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                             loss_scaler=loss_scaler, epoch="best-ema", model_ema=model_ema)
                     print(f'Max EMA accuracy: {max_accuracy_ema:.2f}%')
                 if log_writer is not None:
-                    log_writer.update(test_acc1_ema=test_stats_ema['acc1'], head="perf", step=epoch)
-                log_stats.update({**{f'test_{k}_ema': v for k, v in test_stats_ema.items()}})
+                    log_writer.update(test_acc1_ema=val_stats_ema['acc1'], head="perf", step=epoch)
+                log_stats.update({**{f'val_{k}_ema': v for k, v in val_stats_ema.items()}})
         else:
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                         'epoch': epoch,
-                        'n_parameters': n_parameters}
+                        'n_parameters': n_parameters,
+                         'trainable_parameters': trainable_parameters}
         
         if args.output_dir and utils.is_main_process():
             if log_writer is not None:

@@ -20,7 +20,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
 import timm
-assert timm.__version__ == "0.3.2"  # version check
+# assert timm.__version__ == "0.3.2"  # version check
 import timm.optim.optim_factory as optim_factory
 
 from engine_pretrain import train_one_epoch
@@ -29,6 +29,8 @@ import models.fcmae as fcmae
 import utils
 from utils import NativeScalerWithGradNormCount as NativeScaler
 from utils import str2bool
+
+from datasets import HSVEnhance
 
 def get_args_parser():
     parser = argparse.ArgumentParser('FCMAE pre-training', add_help=False)
@@ -97,6 +99,19 @@ def get_args_parser():
     parser.add_argument('--dist_on_itp', type=str2bool, default=False)
     parser.add_argument('--dist_url', default='env://',
                         help='url used to set up distributed training')
+
+    parser.add_argument('--HSVEnhance', type=str2bool, default=False,
+                        help='Enable or disable HSV enhance during training')
+    parser.add_argument('--HSVE_factors', type=float, nargs=3, default=[0.05, 0.1, 0.1],
+                    help='HSV enhance factors as a list of floats (e.g., 0.05 0.1 0.1)')
+    parser.add_argument('--add_Gauss_Noise', type=str2bool, default=False,
+                        help='Add or not add Gauss Noise during training')
+    parser.add_argument('--GN_factors', type=float, nargs=2, default=[0, 25],
+                    help='Gauss Noise factors as a list of floats (e.g., 0 25)')
+    
+    parser.add_argument('--load_encoder_only', type=str2bool, default=False,
+                        help='Resume only contains weights of encoder or not')
+                        
     return parser
 
 def main(args):
@@ -112,12 +127,15 @@ def main(args):
     
     cudnn.benchmark = True
     
+    hsv_params = [0.05, 0.1, 0.1]
     # simple augmentation
     transform_train = transforms.Compose([
-            transforms.RandomResizedCrop(args.input_size, scale=(0.2, 1.0), interpolation=3),  # 3 is bicubic
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+        transforms.RandomResizedCrop(args.input_size, scale=(0.8, 1.0), ratio=(1.0, 1.0)),  # 随机裁剪并调整大小
+        transforms.RandomHorizontalFlip(),
+        HSVEnhance(*hsv_params) if args.HSVEnhance else transforms.Lambda(lambda x: x),  # 仅在启用时应用
+        transforms.ToTensor(),  # 转换为Tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+
     dataset_train = datasets.ImageFolder(os.path.join(args.data_path, 'train'), transform=transform_train)
     print(dataset_train)
 

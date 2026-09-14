@@ -23,6 +23,8 @@ from torch._six import inf
 from tensorboardX import SummaryWriter
 from collections import OrderedDict
 
+import hashlib
+
 def str2bool(v):
     """
     Converts string to bool type; enables command line 
@@ -471,6 +473,23 @@ def save_model(args, epoch, model, model_without_ddp, optimizer, loss_scaler, mo
         if os.path.exists(old_ckpt):
             os.remove(old_ckpt)
 
+def load_with_dim_fix(model, checkpoint_model):
+    state_dict = checkpoint_model
+    model_dict = model.state_dict()
+    
+    for k in list(state_dict.keys()):
+        if k in model_dict:
+            # 维度适配逻辑
+            if state_dict[k].dim() != model_dict[k].dim():
+                if state_dict[k].numel() == model_dict[k].numel():  # 元素总数相同
+                    state_dict[k] = state_dict[k].view_as(model_dict[k])  # 重塑形状
+                    print(f"Reshaped: {k} from {state_dict[k].shape} to {model_dict[k].shape}")
+    
+    model.load_state_dict(state_dict, strict=False)
+
+def get_tensor_hash(tensor):
+    return hashlib.md5(tensor.cpu().numpy().tobytes()).hexdigest()
+
 def auto_load_model(args, model, model_without_ddp, optimizer, loss_scaler, model_ema=None):
     output_dir = Path(args.output_dir)
     if args.auto_resume and len(args.resume) == 0:
@@ -492,19 +511,64 @@ def auto_load_model(args, model, model_without_ddp, optimizer, loss_scaler, mode
         else:
             checkpoint = torch.load(args.resume, map_location='cpu')
 
-        model_without_ddp.load_state_dict(checkpoint['model'])
+        if args.load_encoder_only:
+            pretrained_bias = checkpoint['model']['stages.0.0.dwconv.bias']
+            print("Pretrained bias hash:", get_tensor_hash(pretrained_bias))
+        try:
+            if args.load_encoder_only:
+                print('Only load weights of encoder')
+                model_without_ddp.encoder.load_state_dict(checkpoint['model'])
+            else:
+                model_without_ddp.load_state_dict(checkpoint['model'])
+            print("Model weights loaded successfully.")
+        except RuntimeError as e:
+            print(f"Error loading model weights: {e}. Retrying by removing 'head.' weights...")
+            state_dict = checkpoint['model']
+            state_dict = {k: v for k, v in state_dict.items() if not k.startswith('head.')}
+            if args.load_encoder_only:
+                load_with_dim_fix(model_without_ddp.encoder, checkpoint['model'])
+            else:
+                model_without_ddp.load_state_dict(state_dict, strict=False)
+            print("Model weights loaded successfully after removing 'head.' weights.")
+               
+        if args.load_encoder_only:
+            model_bias = model_without_ddp.encoder.stages[0][0].dwconv.bias.detach()
+            print("Model bias hash:", get_tensor_hash(model_bias))
+            assert get_tensor_hash(pretrained_bias) == get_tensor_hash(model_bias), "权重不匹配！"
         print("Resume checkpoint %s" % args.resume)
+
         if 'optimizer' in checkpoint and 'epoch' in checkpoint:
-            optimizer.load_state_dict(checkpoint['optimizer'])
+            try:
+                if 'optimizer' in checkpoint and len(checkpoint['optimizer']['param_groups']) == len(optimizer.param_groups):
+                    optimizer.load_state_dict(checkpoint['optimizer'])
+                    print("Optimizer state loaded successfully.")
+                else:
+                    print("Optimizer parameter groups mismatch. Recreating optimizer...")
+                    optimizer = torch.optim.AdamW(
+                        filter(lambda p: p.requires_grad, model.parameters()),
+                        lr=args.lr, 
+                        weight_decay=args.weight_decay
+                    )
+            except Exception as e:
+                print(f"Error loading optimizer state ({type(e).__name__}): {e}. Recreating optimizer...")
+                optimizer = torch.optim.AdamW(
+                    filter(lambda p: p.requires_grad, model.parameters()),
+                    lr=args.lr,
+                    weight_decay=args.weight_decay
+                )
             if not isinstance(checkpoint['epoch'], str): # does not support resuming with 'best', 'best-ema'
                 args.start_epoch = checkpoint['epoch'] + 1
             else:
                 assert args.eval, 'Does not support resuming with checkpoint-best'
             if hasattr(args, 'model_ema') and args.model_ema:
                 if 'model_ema' in checkpoint.keys():
-                    model_ema.ema.load_state_dict(checkpoint['model_ema'])
+                    state_dict = checkpoint['model_ema']
+                    state_dict = {k: v for k, v in state_dict.items() if not k.startswith('head.')}
+                    model_ema.ema.load_state_dict(state_dict, strict=False)
                 else:
-                    model_ema.ema.load_state_dict(checkpoint['model'])
+                    state_dict = checkpoint['model']
+                    state_dict = {k: v for k, v in state_dict.items() if not k.startswith('head.')}
+                    model_ema.ema.load_state_dict(state_dict, strict=False)
             if 'scaler' in checkpoint:
                 loss_scaler.load_state_dict(checkpoint['scaler'])
             print("With optim & sched!")

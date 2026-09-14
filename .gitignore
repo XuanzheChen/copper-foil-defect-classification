@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Environments and editors
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Data, weights and experiment outputs
+data/
+datasets/
+checkpoints/
+outputs/
+results/
+runs/
+logs/
+wrong_imgs/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+
+# Local third-party checkout; AMP uses PyTorch native autocast
+apex/
+
+# OS files
+.DS_Store
+Thumbs.db
+
