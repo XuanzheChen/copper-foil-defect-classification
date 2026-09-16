@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import math
 import os
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +19,11 @@ import torch
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from models.convnextv2 import convnextv2_tiny
 
@@ -57,9 +63,8 @@ class DirectImageDataset(Dataset):
 
 
 def parse_args() -> argparse.Namespace:
-    project_root = Path(__file__).resolve().parents[1]
     default_checkpoint = os.environ.get(
-        "PRETRAINED_WEIGHT", str(project_root / DEFAULT_CHECKPOINT)
+        "PRETRAINED_WEIGHT", str(PROJECT_ROOT / DEFAULT_CHECKPOINT)
     )
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -161,8 +166,8 @@ def run_latency_benchmark(
     warmup_images: int,
     max_images: int,
 ) -> list[float]:
-    # Warmup is also batch_size=1 so kernel selection/cache behavior matches the
-    # actual timed path.
+    # Warmup also uses batch_size=1 so kernel selection/cache behavior matches
+    # the actual timed path.
     warmup_iterator = iter(loader)
     for _ in range(warmup_images):
         try:
@@ -179,8 +184,8 @@ def run_latency_benchmark(
         if max_images > 0 and len(latencies_ms) >= max_images:
             break
 
-        # Image loading, PIL decode, preprocessing and H2D transfer happen
-        # outside the timer. The measured value is model forward latency only.
+        # Loading, PIL decode, preprocessing and H2D transfer happen outside
+        # the timer. The measured value is model forward latency only.
         images = images.to(device, non_blocking=False)
         sync_if_needed(device)
         start = time.perf_counter()
