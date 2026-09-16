@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Measure single-image model inference latency on images below one directory.
+"""Measure steady-state end-to-end single-image inference latency.
 
-This is a temporary benchmark utility. It intentionally focuses on forward-pass
-latency rather than classification accuracy.
+This temporary benchmark intentionally simulates a sequential deployment path:
+open/decode one image -> RGB conversion -> preprocessing -> CPU-to-device copy ->
+model forward -> argmax -> prediction returned to CPU.
+
+Model/checkpoint loading is intentionally excluded because a deployed service
+normally loads the model once and then handles many image requests.
 """
 
 from __future__ import annotations
@@ -10,14 +14,13 @@ from __future__ import annotations
 import argparse
 import math
 import os
+import random
 import sys
 import time
-from dataclasses import dataclass
 from pathlib import Path
 
 import torch
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 
 
@@ -30,36 +33,6 @@ from models.convnextv2 import convnextv2_tiny
 
 IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp"}
 DEFAULT_CHECKPOINT = "pretrained-weights/convnextv2_tiny_1k_224_ema.pt"
-
-
-@dataclass(frozen=True)
-class ImageRecord:
-    path: Path
-
-
-class DirectImageDataset(Dataset):
-    def __init__(self, root: Path, transform: transforms.Compose) -> None:
-        self.transform = transform
-        self.records = [ImageRecord(path) for path in self._image_paths(root)]
-        if not self.records:
-            raise ValueError(f"No supported images found below {root}")
-
-    @staticmethod
-    def _image_paths(directory: Path) -> list[Path]:
-        return sorted(
-            path
-            for path in directory.rglob("*")
-            if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
-        )
-
-    def __len__(self) -> int:
-        return len(self.records)
-
-    def __getitem__(self, index: int) -> tuple[torch.Tensor, str]:
-        record = self.records[index]
-        with Image.open(record.path) as image:
-            tensor = self.transform(image.convert("RGB"))
-        return tensor, str(record.path)
 
 
 def parse_args() -> argparse.Namespace:
@@ -76,16 +49,39 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--warmup-images",
         type=int,
-        default=20,
-        help="Number of single-image forward passes used only for warmup.",
+        default=50,
+        help="Number of untimed end-to-end requests used for warmup.",
     )
     parser.add_argument(
+        "--timed-images",
         "--max-images",
+        dest="timed_images",
+        type=int,
+        default=1000,
+        help=(
+            "Number of timed single-image requests. Images are reused cyclically "
+            "when the directory contains fewer images. Set 0 to process each "
+            "source image exactly once. Default: 1000."
+        ),
+    )
+    parser.add_argument(
+        "--seed",
         type=int,
         default=0,
-        help="Maximum number of timed images; 0 means all images.",
+        help="Seed used to shuffle source image order before benchmarking.",
     )
     return parser.parse_args()
+
+
+def collect_image_paths(root: Path) -> list[Path]:
+    paths = sorted(
+        path
+        for path in root.rglob("*")
+        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    )
+    if not paths:
+        raise ValueError(f"No supported images found below {root}")
+    return paths
 
 
 def build_transform(input_size: int) -> transforms.Compose:
@@ -143,55 +139,72 @@ def percentile(values: list[float], q: float) -> float:
     return ordered[lower] * (1.0 - weight) + ordered[upper] * weight
 
 
-def forward_once(
+def run_single_request(
+    image_path: Path,
+    transform: transforms.Compose,
     model: torch.nn.Module,
-    image: torch.Tensor,
     device: torch.device,
     amp: bool,
-) -> None:
+) -> int:
+    # Image.open + convert covers file access and image decoding. The transform
+    # covers resize/crop/tensor conversion/normalization.
+    with Image.open(image_path) as image:
+        image_tensor = transform(image.convert("RGB"))
+
+    # A real single-image classifier normally adds the batch dimension just
+    # before inference, then transfers the tensor to the inference device.
+    image_tensor = image_tensor.unsqueeze(0).to(device, non_blocking=False)
+
     with torch.inference_mode():
         with torch.autocast(
             device_type=device.type,
             dtype=torch.float16,
             enabled=amp and device.type == "cuda",
         ):
-            model(image)
+            logits = model(image_tensor)
+
+    # Include minimal deployment post-processing and returning the result to CPU.
+    prediction = logits.argmax(dim=1)
+    return int(prediction.item())
 
 
-def run_latency_benchmark(
+def request_path(paths: list[Path], request_index: int) -> Path:
+    return paths[request_index % len(paths)]
+
+
+def run_end_to_end_benchmark(
+    paths: list[Path],
+    transform: transforms.Compose,
     model: torch.nn.Module,
-    loader: DataLoader,
     device: torch.device,
     amp: bool,
     warmup_images: int,
-    max_images: int,
+    timed_images: int,
 ) -> list[float]:
-    # Warmup also uses batch_size=1 so kernel selection/cache behavior matches
-    # the actual timed path.
-    warmup_iterator = iter(loader)
-    for _ in range(warmup_images):
-        try:
-            images, _ = next(warmup_iterator)
-        except StopIteration:
-            break
-        images = images.to(device, non_blocking=False)
-        forward_once(model, images, device, amp)
-
+    # Warm up the same end-to-end path used during the actual benchmark. This
+    # excludes cold-start effects from model/kernel initialization and better
+    # reflects a continuously running deployed classifier.
+    for index in range(warmup_images):
+        run_single_request(
+            request_path(paths, index), transform, model, device, amp
+        )
     sync_if_needed(device)
 
+    request_count = len(paths) if timed_images == 0 else timed_images
     latencies_ms: list[float] = []
-    for images, _ in loader:
-        if max_images > 0 and len(latencies_ms) >= max_images:
-            break
 
-        # Loading, PIL decode, preprocessing and H2D transfer happen outside
-        # the timer. The measured value is model forward latency only.
-        images = images.to(device, non_blocking=False)
+    for index in range(request_count):
+        # Ensure the previous request has fully completed before measuring the
+        # next one. This models sequential batch_size=1 request handling.
         sync_if_needed(device)
         start = time.perf_counter()
 
-        forward_once(model, images, device, amp)
+        run_single_request(
+            request_path(paths, index), transform, model, device, amp
+        )
 
+        # prediction.item() already requires the result on CPU, but an explicit
+        # synchronize keeps the timing boundary unambiguous for CUDA workloads.
         sync_if_needed(device)
         latencies_ms.append((time.perf_counter() - start) * 1000.0)
 
@@ -204,8 +217,8 @@ def main() -> None:
         raise ValueError("--input-size must be at least 32")
     if args.warmup_images < 0:
         raise ValueError("--warmup-images must be non-negative")
-    if args.max_images < 0:
-        raise ValueError("--max-images must be non-negative")
+    if args.timed_images < 0:
+        raise ValueError("--timed-images must be non-negative")
     if not args.data_path.is_dir():
         raise FileNotFoundError(f"Data directory not found: {args.data_path}")
     if not args.checkpoint.is_file():
@@ -217,46 +230,54 @@ def main() -> None:
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
 
-    dataset = DirectImageDataset(args.data_path, build_transform(args.input_size))
-    loader = DataLoader(
-        dataset,
-        batch_size=1,
-        shuffle=False,
-        num_workers=0,
-        pin_memory=False,
-        drop_last=False,
-    )
+    image_paths = collect_image_paths(args.data_path)
+    random.Random(args.seed).shuffle(image_paths)
+
+    transform = build_transform(args.input_size)
     model = load_model(args.checkpoint, device)
 
-    latencies_ms = run_latency_benchmark(
+    latencies_ms = run_end_to_end_benchmark(
+        paths=image_paths,
+        transform=transform,
         model=model,
-        loader=loader,
         device=device,
         amp=args.amp,
         warmup_images=args.warmup_images,
-        max_images=args.max_images,
+        timed_images=args.timed_images,
     )
     if not latencies_ms:
         raise RuntimeError("No images were timed")
 
+    total_seconds = sum(latencies_ms) / 1000.0
     mean_ms = sum(latencies_ms) / len(latencies_ms)
     p50_ms = percentile(latencies_ms, 0.50)
     p95_ms = percentile(latencies_ms, 0.95)
     p99_ms = percentile(latencies_ms, 0.99)
-    sequential_fps = 1000.0 / mean_ms
+    min_ms = min(latencies_ms)
+    max_ms = max(latencies_ms)
+    end_to_end_fps = len(latencies_ms) / total_seconds
 
-    print(f"timed_images: {len(latencies_ms)}")
+    print(f"source_images: {len(image_paths)}")
+    print(f"timed_requests: {len(latencies_ms)}")
+    print(f"warmup_requests: {args.warmup_images}")
     print("batch_size: 1")
-    print("num_workers: 0")
+    print("request_mode: sequential")
     print(f"device: {device}")
     print(f"checkpoint: {args.checkpoint}")
+    print(f"input_size: {args.input_size}")
     print(f"amp: {args.amp and device.type == 'cuda'}")
-    print("timing_scope: model forward only (excludes image decode/preprocess/H2D)")
-    print(f"latency_mean_ms: {mean_ms:.3f}")
-    print(f"latency_p50_ms: {p50_ms:.3f}")
-    print(f"latency_p95_ms: {p95_ms:.3f}")
-    print(f"latency_p99_ms: {p99_ms:.3f}")
-    print(f"sequential_fps: {sequential_fps:.2f}")
+    print(
+        "timing_scope: file open/decode -> RGB -> resize/crop/normalize -> "
+        "H2D -> model forward -> argmax -> CPU result"
+    )
+    print(f"end_to_end_total_seconds: {total_seconds:.3f}")
+    print(f"end_to_end_latency_mean_ms: {mean_ms:.3f}")
+    print(f"end_to_end_latency_p50_ms: {p50_ms:.3f}")
+    print(f"end_to_end_latency_p95_ms: {p95_ms:.3f}")
+    print(f"end_to_end_latency_p99_ms: {p99_ms:.3f}")
+    print(f"end_to_end_latency_min_ms: {min_ms:.3f}")
+    print(f"end_to_end_latency_max_ms: {max_ms:.3f}")
+    print(f"end_to_end_fps: {end_to_end_fps:.2f}")
 
 
 if __name__ == "__main__":
