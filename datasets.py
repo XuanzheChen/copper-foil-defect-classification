@@ -1,175 +1,284 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
-
+#
 # All rights reserved.
-
+#
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+"""Dataset and preprocessing utilities for the copper-foil baseline.
 
+The formal copper-foil pipeline intentionally keeps the native 200 x 200
+pixel scale. Images are admitted only when their original size is exactly
+200 x 200, decoded to real 8-bit grayscale before augmentation, and expanded
+back to three identical channels only immediately before tensor conversion.
+"""
+
+import csv
 import os
-from torchvision import datasets, transforms
+from pathlib import Path
 
-from timm.data.constants import \
-    IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD, IMAGENET_INCEPTION_MEAN, IMAGENET_INCEPTION_STD
-from timm.data import create_transform
+import torch
 from PIL import Image
+from torchvision import datasets, transforms
+from torchvision.transforms import functional as TF
 
-import cv2
-import numpy as np
 
-class HSVEnhance:
-    def __init__(self, h_gain=0.05, s_gain=0.1, v_gain=0.1):
-        self.h_gain = h_gain
-        self.s_gain = s_gain
-        self.v_gain = v_gain
+FORMAL_IMAGE_SIZE = (200, 200)
+TRANSLATION_PADDING = 6
+BRIGHTNESS_RANGE = (0.95, 1.05)
+CONTRAST_RANGE = (0.92, 1.08)
+GAUSSIAN_NOISE_SIGMA_RANGE = (0.0, 0.005)
+IMAGENET_MEAN = (0.485, 0.456, 0.406)
+IMAGENET_STD = (0.229, 0.224, 0.225)
+
+
+def load_grayscale_image(path):
+    """Load an admitted image and explicitly decode it as true grayscale.
+
+    In particular, palette PNGs must not reach ToTensor() in PIL mode "P".
+    The size assertion is repeated here defensively in case a file changes
+    after the dataset was scanned.
+    """
+    with open(path, "rb") as file_obj:
+        with Image.open(file_obj) as img:
+            if img.size != FORMAL_IMAGE_SIZE:
+                raise ValueError(
+                    f"Formal samples must be {FORMAL_IMAGE_SIZE}, got "
+                    f"{img.size} for {path!r}."
+                )
+            return img.convert("L")
+
+
+class RandomBrightness:
+    """Apply grayscale brightness with a factor sampled from a fixed range."""
+
+    def __init__(self, factor_range=BRIGHTNESS_RANGE):
+        self.factor_range = tuple(factor_range)
 
     def __call__(self, img):
-        img = np.array(img)
-        img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV).astype(np.float32)
+        if img.mode != "L":
+            raise ValueError(
+                f"Brightness must run in grayscale mode 'L', got {img.mode!r}."
+            )
+        factor = torch.empty(1).uniform_(*self.factor_range).item()
+        return TF.adjust_brightness(img, factor)
 
-        h = img_hsv[..., 0]
-        s = img_hsv[..., 1]
-        v = img_hsv[..., 2]
+    def __repr__(self):
+        return f"{self.__class__.__name__}(factor_range={self.factor_range})"
 
-        h = (h + np.random.uniform(-self.h_gain * 360, self.h_gain * 360)) % 360
-        s = np.clip(s * (1 + np.random.uniform(-self.s_gain, self.s_gain)), 0, 255)
-        v = np.clip(v * (1 + np.random.uniform(-self.v_gain, self.v_gain)), 0, 255)
 
-        img_hsv[..., 0] = h
-        img_hsv[..., 1] = s
-        img_hsv[..., 2] = v
+class RandomContrast:
+    """Apply grayscale contrast with a factor sampled from a fixed range."""
 
-        img_hsv = img_hsv.astype(np.uint8)
-        img_rgb = cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
+    def __init__(self, factor_range=CONTRAST_RANGE):
+        self.factor_range = tuple(factor_range)
 
-        return Image.fromarray(img_rgb)
+    def __call__(self, img):
+        if img.mode != "L":
+            raise ValueError(
+                f"Contrast must run in grayscale mode 'L', got {img.mode!r}."
+            )
+        factor = torch.empty(1).uniform_(*self.factor_range).item()
+        return TF.adjust_contrast(img, factor)
 
-class GaussianNoise:
-    def __init__(self, mean=0, sigma=20):
-        self.mean = mean
-        self.sigma = sigma
+    def __repr__(self):
+        return f"{self.__class__.__name__}(factor_range={self.factor_range})"
 
-    def __call__(self, image):        
-        if isinstance(image, np.ndarray):
-            img = image
-        else:
-            img = np.array(image)
 
-        row, col, ch = img.shape if len(img.shape) == 3 else (*img.shape, 1)
-        gauss = np.random.normal(self.mean, self.sigma, (row, col, ch))
-        gauss = gauss.reshape(row, col, ch)
-        gauss = gauss * np.random.rand()
-        noisy_image = img + gauss
-        noisy_image = np.clip(noisy_image, 0, 255)
-        noisy_image = noisy_image.astype(np.uint8)
-        if not isinstance(image, np.ndarray):
-            noisy_image = Image.fromarray(noisy_image)
+class GrayscaleToRGB:
+    """Replicate one grayscale channel into three identical RGB channels."""
 
-        return noisy_image
+    def __call__(self, img):
+        if img.mode != "L":
+            raise ValueError(
+                f"RGB expansion expects grayscale mode 'L', got {img.mode!r}."
+            )
+        return img.convert("RGB")
+
+
+class SharedChannelGaussianNoise:
+    """Add one Gaussian noise map to all three channels before normalization."""
+
+    def __init__(self, sigma_range=GAUSSIAN_NOISE_SIGMA_RANGE):
+        self.sigma_range = tuple(sigma_range)
+
+    def __call__(self, x):
+        if not torch.is_tensor(x) or x.ndim != 3 or x.shape[0] != 3:
+            raise ValueError(
+                "SharedChannelGaussianNoise expects Tensor[3, H, W]."
+            )
+        if not (torch.equal(x[0], x[1]) and torch.equal(x[1], x[2])):
+            raise ValueError(
+                "Expected identical RGB grayscale channels before Gaussian noise."
+            )
+        if torch.any(x < 0.0) or torch.any(x > 1.0):
+            raise ValueError("Gaussian noise expects an input tensor in [0, 1].")
+
+        sigma = torch.empty((), dtype=x.dtype, device=x.device).uniform_(
+            *self.sigma_range
+        )
+        noise = torch.randn_like(x[:1]) * sigma
+        x = (x + noise.expand_as(x)).clamp(0.0, 1.0)
+
+        if not (torch.equal(x[0], x[1]) and torch.equal(x[1], x[2])):
+            raise RuntimeError("Shared Gaussian noise broke channel equality.")
+        if not torch.isfinite(x).all():
+            raise RuntimeError("Gaussian noise produced NaN or Inf values.")
+        return x
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(sigma_range={self.sigma_range})"
+
+
+class CopperFoilImageFolder(datasets.ImageFolder):
+    """ImageFolder that excludes non-200x200 samples before formal loading."""
+
+    def __init__(self, root, transform, exclusion_report_path):
+        super().__init__(
+            root=root,
+            transform=transform,
+            loader=load_grayscale_image,
+        )
+        self.exclusion_report_path = Path(exclusion_report_path)
+
+        kept_samples = []
+        excluded = []
+
+        for path, target in self.samples:
+            with Image.open(path) as img:
+                width, height = img.size
+
+            if (width, height) != FORMAL_IMAGE_SIZE:
+                excluded.append(
+                    {
+                        "path": path,
+                        "class": self.classes[target],
+                        "width": width,
+                        "height": height,
+                        "reason": "non_200x200",
+                    }
+                )
+            else:
+                kept_samples.append((path, target))
+
+        self.samples = kept_samples
+        self.imgs = kept_samples
+        self.targets = [target for _, target in kept_samples]
+        self.excluded_non_200x200 = excluded
+        self._write_exclusion_report()
+
+    def _write_exclusion_report(self):
+        self.exclusion_report_path.parent.mkdir(parents=True, exist_ok=True)
+        fieldnames = ["path", "class", "width", "height", "reason"]
+        with self.exclusion_report_path.open(
+            "w", newline="", encoding="utf-8"
+        ) as report:
+            writer = csv.DictWriter(report, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(self.excluded_non_200x200)
+
+
+def _validate_formal_input_size(args):
+    input_size = getattr(args, "input_size", FORMAL_IMAGE_SIZE[0])
+    if input_size != FORMAL_IMAGE_SIZE[0]:
+        raise ValueError(
+            "Formal copper-foil preprocessing requires --input_size 200. "
+            "Resize is intentionally forbidden."
+        )
+
+
+def _build_exclusion_report_path(args, is_train):
+    base = Path(getattr(args, "output_dir", "") or os.getcwd())
+    split = "train" if is_train else "eval"
+    return (
+        base
+        / "preprocessing_reports"
+        / split
+        / "excluded_non_200x200.csv"
+    )
+
 
 def build_dataset(is_train, args):
+    """Build the formal copper-foil folder dataset.
+
+    The formal preprocessing applies to folder-based training/evaluation data.
+    The legacy CIFAR option is retained only for upstream compatibility and is
+    not part of the copper-foil baseline.
+    """
+    if args.data_set == "CIFAR":
+        dataset = datasets.CIFAR100(
+            args.data_path,
+            train=is_train,
+            transform=transforms.ToTensor(),
+            download=True,
+        )
+        return dataset, 100
+
+    if args.data_set not in {"IMNET", "image_folder"}:
+        raise NotImplementedError(f"Unsupported dataset type: {args.data_set}")
+
+    _validate_formal_input_size(args)
     transform = build_transform(is_train, args)
 
-    print("Transform = ")
-    if isinstance(transform, tuple):
-        for trans in transform:
-            print(" - - - - - - - - - - ")
-            for t in trans.transforms:
-                print(t)
+    if args.data_set == "IMNET":
+        root = os.path.join(args.data_path, "train" if is_train else "val")
     else:
-        for t in transform.transforms:
-            print(t)
-    print("---------------------------")
-
-    if args.data_set == 'CIFAR':
-        dataset = datasets.CIFAR100(args.data_path, train=is_train, transform=transform, download=True)
-        nb_classes = 100
-    elif args.data_set == 'IMNET':
-        print("reading from datapath", args.data_path)
-        root = os.path.join(args.data_path, 'train' if is_train else 'val')
-        dataset = datasets.ImageFolder(root, transform=transform)
-        nb_classes = len([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))])
-        assert len(dataset.class_to_idx) == nb_classes
-    elif args.data_set == "image_folder":
         root = args.data_path if is_train else args.eval_data_path
-        dataset = datasets.ImageFolder(root, transform=transform)
+
+    if not root:
+        raise ValueError("A dataset root is required for formal preprocessing.")
+
+    report_path = _build_exclusion_report_path(args, is_train)
+    dataset = CopperFoilImageFolder(
+        root=root,
+        transform=transform,
+        exclusion_report_path=report_path,
+    )
+
+    if args.data_set == "image_folder":
         nb_classes = args.nb_classes
         assert len(dataset.class_to_idx) == nb_classes
     else:
-        raise NotImplementedError()
+        nb_classes = len(dataset.classes)
+
+    print("Transform =")
+    for transform_step in transform.transforms:
+        print(transform_step)
+    print("---------------------------")
+    print(f"Formal dataset root: {root}")
+    print(f"Admitted samples: {len(dataset)}")
+    print(f"Excluded non-200x200 samples: {len(dataset.excluded_non_200x200)}")
+    print(f"Exclusion report: {dataset.exclusion_report_path}")
     print("Number of the class = %d" % nb_classes)
 
     return dataset, nb_classes
 
 
 def build_transform(is_train, args):
-    resize_im = args.input_size > 32
-    imagenet_default_mean_and_std = args.imagenet_default_mean_and_std
-    mean = IMAGENET_INCEPTION_MEAN if not imagenet_default_mean_and_std else IMAGENET_DEFAULT_MEAN
-    std = IMAGENET_INCEPTION_STD if not imagenet_default_mean_and_std else IMAGENET_DEFAULT_STD
+    """Build the fixed formal train or evaluation preprocessing pipeline."""
+    _validate_formal_input_size(args)
 
     if is_train:
-        # 训练集：随机裁剪一个比例1:1的区域
-        transformlist = []
-        if args.use_grayscale:
-            transformlist.append(transforms.Grayscale(num_output_channels=3))
-        
-        transformlist.append(
-            transforms.RandomResizedCrop(args.input_size, scale=(0.8, 1.0), ratio=(1.0, 1.0))
+        return transforms.Compose(
+            [
+                transforms.Pad(
+                    TRANSLATION_PADDING,
+                    padding_mode="reflect",
+                ),
+                transforms.RandomCrop(FORMAL_IMAGE_SIZE),
+                RandomBrightness(BRIGHTNESS_RANGE),
+                RandomContrast(CONTRAST_RANGE),
+                GrayscaleToRGB(),
+                transforms.ToTensor(),
+                SharedChannelGaussianNoise(GAUSSIAN_NOISE_SIGMA_RANGE),
+                transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+            ]
         )
-        if args.HSVEnhance:
-            h_gain, s_gain, v_gain = args.HSVE_factors
-            transformlist.append(
-                HSVEnhance(h_gain=h_gain, s_gain=s_gain, v_gain=v_gain)
-            )
-        if args.add_Gauss_Noise:
-            GN_mean, GN_std = args.GN_factors
-            transformlist.append(
-                GaussianNoise(mean=GN_mean, sigma=GN_std)
-            )
 
-        # 添加其他增强
-        transformlist.append(
-            create_transform(
-                input_size=args.input_size,
-                is_training=True,
-                color_jitter=args.color_jitter,
-                auto_augment=args.aa,
-                interpolation=args.train_interpolation,
-                re_prob=args.reprob,
-                re_mode=args.remode,
-                re_count=args.recount,
-                mean=mean,
-                std=std,
-            )
-        )
-        
-        transform = transforms.Compose(transformlist)
-        return transform
-
-    else:
-        # 验证集：中心裁剪并统一尺寸
-        t = []
-        if resize_im:
-            if args.input_size >= 384:  
-                t.append(
-                    transforms.Resize(
-                        (args.input_size, args.input_size), interpolation=transforms.InterpolationMode.BICUBIC
-                    )
-                )
-                print(f"Warping {args.input_size} size input images...")
-            else:
-                if args.crop_pct is None:
-                    args.crop_pct = 224 / 256
-                size = int(args.input_size / args.crop_pct)
-                t.append(
-                    transforms.Resize(size, interpolation=transforms.InterpolationMode.BICUBIC)
-                )
-                t.append(transforms.CenterCrop(args.input_size))  # 中心裁剪
-
-        if args.use_grayscale:
-            t.insert(0, transforms.Grayscale(num_output_channels=3))
-        t.append(transforms.ToTensor())
-        t.append(transforms.Normalize(mean, std))
-
-        return transforms.Compose(t)
+    return transforms.Compose(
+        [
+            GrayscaleToRGB(),
+            transforms.ToTensor(),
+            transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+        ]
+    )
