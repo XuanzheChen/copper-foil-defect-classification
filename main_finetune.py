@@ -146,7 +146,8 @@ def get_args_parser():
     
     parser.add_argument('--eval_data_path', default=None, type=str,
                         help='dataset path for evaluation')
-    parser.add_argument('--imagenet_default_mean_and_std', type=str2bool, default=True)
+    parser.add_argument('--imagenet_default_mean_and_std', type=str2bool, default=True,
+                        help='Legacy no-op: normalization is always ImageNet stats (pretrained weights require them)')
     parser.add_argument('--data_set', default='IMNET', choices=['CIFAR', 'IMNET', 'image_folder'],
                         type=str, help='ImageNet dataset path')
     parser.add_argument('--auto_resume', type=str2bool, default=True)
@@ -169,6 +170,11 @@ def get_args_parser():
     # Evaluation parameters
     parser.add_argument('--crop_pct', type=float, default=None)
 
+    parser.add_argument('--confusion_matrix', type=str2bool, default=True,
+                        help='In --eval mode, save confusion matrices (count + row-normalized CSV) and print a summary. The per-epoch validation loop never writes these.')
+    parser.add_argument('--save_eval_predictions', type=str2bool, default=True,
+                        help='In --eval mode, save per-sample predictions (eval_predictions.csv / eval_misclassified.csv). The per-epoch validation loop never writes these.')
+
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int,
                         help='number of distributed processes')
@@ -180,16 +186,22 @@ def get_args_parser():
     parser.add_argument('--use_amp', type=str2bool, default=False, 
                         help="Use apex AMP (Automatic Mixed Precision) or not")
 
-    parser.add_argument('--use_grayscale', type=str2bool, default=False, 
-                        help="Use trasforms.Grayscale or not")
+    parser.add_argument('--use_grayscale', type=str2bool, default=False,
+                        help="Compatibility no-op: the formal pipeline always decodes true grayscale")
     parser.add_argument('--HSVEnhance', type=str2bool, default=False,
-                        help='Enable or disable HSV enhance during training')
+                        help='Enable grayscale brightness/contrast jitter during training '
+                             '(the grayscale equivalent of the historical HSV-space enhance). '
+                             'Note: the pre-fix pipeline applied this unconditionally; it now '
+                             'defaults OFF, so bare runs train with a leaner pipeline than before')
     parser.add_argument('--HSVE_factors', type=float, nargs=3, default=[0.05, 0.1, 0.1],
-                    help='HSV enhance factors as a list of floats (e.g., 0.05 0.1 0.1)')
+                    help='Legacy no-op: jitter ranges are fixed constants (BRIGHTNESS_RANGE/CONTRAST_RANGE)')
     parser.add_argument('--add_Gauss_Noise', type=str2bool, default=False,
-                        help='Add or not add Gauss Noise during training')
+                        help='Add shared-channel Gaussian noise during training '
+                             '(off by default; the pre-fix pipeline applied it unconditionally)')
     parser.add_argument('--GN_factors', type=float, nargs=2, default=[0, 25],
-                    help='Gauss Noise factors as a list of floats (e.g., 0 25)')
+                    help='Gauss Noise factors on the 0..255 pixel scale; sigma range = values/255 '
+                         '(default (0,25) -> (0, 0.098), ~20x the historical hardcoded (0, 0.005); '
+                         'use (0, 1.275) to reproduce the historical strength)')
     parser.add_argument('--load_encoder_only', type=str2bool, default=False,
                         help='Resume only contains weights of encoder or not')
     parser.add_argument('--freeze', type=str2bool, default=False,
@@ -221,7 +233,7 @@ def main(args):
             raise ValueError(f"Invalid file format: {args.class_labels}. Expected a .txt file.")
         
         # 读取文件内容
-        with open(args.class_labels, 'r') as f:
+        with open(args.class_labels, 'r', encoding='utf-8') as f:
             lines = f.readlines()
             class_list = []
             for line in lines:
@@ -245,6 +257,16 @@ def main(args):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         class_list = []
+
+    if args.eval and class_list and dataset_val is not None:
+        dataset_classes = getattr(dataset_val, "classes", None)
+        if dataset_classes is not None and len(class_list) != len(dataset_classes):
+            raise ValueError(
+                f"class_labels.txt has {len(class_list)} classes but the eval dataset "
+                f"({getattr(dataset_val, 'root', '?')}) has {len(dataset_classes)}: "
+                f"{sorted(dataset_classes)}. Refusing to evaluate on a mismatched class list — "
+                f"per-sample predictions would index out of range."
+            )
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
@@ -422,8 +444,17 @@ def main(args):
 
     if args.eval:
         print(f"Eval only mode")
-        val_stats, acc_info = evaluate(data_loader_val, model, device)
-        with open(os.path.join(args.output_dir, "eval-class-acc.txt"), "w")as f:
+        val_stats, acc_info = evaluate(
+            data_loader_val, model, device,
+            output_dir=args.output_dir,
+            save_predictions=args.save_eval_predictions,
+            save_confusion=args.confusion_matrix,
+            class_names=class_list,
+            num_classes=args.nb_classes,
+            num_tasks=num_tasks,
+            global_rank=global_rank,
+        )
+        with open(os.path.join(args.output_dir, "eval-class-acc.txt"), "w", encoding="utf-8") as f:
                 for cls, stats in acc_info.items():
                     num_samples = stats["total"]
                     acc = stats["accuracy"]
@@ -461,7 +492,7 @@ def main(args):
         if data_loader_val is not None:
             val_stats, acc_info = evaluate(data_loader_val, model, device, use_amp=args.use_amp)
             print(f"Accuracy of the model on the {len(dataset_val)} val images: {val_stats['acc1']:.1f}%")
-            with open(os.path.join(args.output_dir, "val-class-acc.txt"), "a")as f:
+            with open(os.path.join(args.output_dir, "val-class-acc.txt"), "a", encoding="utf-8") as f:
                 for cls, stats in acc_info.items():
                     num_samples = stats["total"]
                     acc = stats["accuracy"]

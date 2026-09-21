@@ -16,9 +16,17 @@ EPOCHS="${EPOCHS:-200}"
 
 # --input_size must stay 200. datasets.py raises on any other value, because the
 # formal copper-foil pipeline forbids resize and keeps the native 200x200 scale.
-# --use_grayscale / --HSVEnhance / --add_Gauss_Noise are inert placeholders kept
-# for argument compatibility: grayscale decoding, brightness/contrast jitter and
-# Gaussian noise are all hardcoded in datasets.py now.
+#
+# Augmentation switches are real controls in datasets.py.build_transform:
+#   --HSVEnhance true      gates the grayscale brightness/contrast jitter block
+#   --add_Gauss_Noise false  gates SharedChannelGaussianNoise (off; sigma comes
+#                          from --GN_factors / 255 when enabled)
+#   --use_grayscale        compatibility only: the formal pipeline always decodes
+#                          true grayscale and expands to three identical channels
+# These used to be inert placeholders -- noise in particular was applied no
+# matter what this file declared. This run is therefore the "no Gaussian noise,
+# brightness/contrast jitter" configuration that --add_Gauss_Noise false always
+# claimed to be.
 #
 # 200x200 carries 4.3x the pixels of the 96x96 these settings were tuned at, and
 # batch 128 exhausted the 16 GB card on the first backward pass. BATCH_SIZE and

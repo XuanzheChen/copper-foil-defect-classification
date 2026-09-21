@@ -27,6 +27,9 @@ FORMAL_IMAGE_SIZE = (200, 200)
 TRANSLATION_PADDING = 6
 BRIGHTNESS_RANGE = (0.95, 1.05)
 CONTRAST_RANGE = (0.92, 1.08)
+# Historical default sigma range for SharedChannelGaussianNoise, in the [0, 1]
+# tensor space. The pipeline itself now derives sigma from --GN_factors (given
+# in 0..255 pixel units) whenever --add_Gauss_Noise is enabled.
 GAUSSIAN_NOISE_SIGMA_RANGE = (0.0, 0.005)
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
@@ -254,31 +257,67 @@ def build_dataset(is_train, args):
     return dataset, nb_classes
 
 
+def _gaussian_noise_sigma_range(args):
+    """Map the legacy 0..255-scale --GN_factors to the [0, 1] tensor space.
+
+    SharedChannelGaussianNoise operates on normalized tensors, but --GN_factors
+    were always specified on the 8-bit pixel scale (default [0, 25], i.e. up to
+    ~10% of the full range). Dividing the upper bound by 255 keeps the switch
+    meaningful instead of silently weakening it.
+    """
+    factors = getattr(args, "GN_factors", (0.0, 25.0))
+    return (float(factors[0]) / 255.0, float(factors[1]) / 255.0)
+
+
 def build_transform(is_train, args):
-    """Build the fixed formal train or evaluation preprocessing pipeline."""
+    """Build the formal copper-foil train or evaluation preprocessing pipeline.
+
+    The augmentation switches are real controls now (they were inert
+    placeholders in earlier revisions):
+
+    * ``--HSVEnhance``        gates the grayscale brightness/contrast jitter
+                              block. The formal pipeline runs on true grayscale,
+                              where the historical HSV-space jitter reduces to
+                              value jitter, so brightness/contrast is its
+                              grayscale equivalent.
+    * ``--add_Gauss_Noise``   gates ``SharedChannelGaussianNoise`` (off by
+                              default). When enabled the sigma range comes from
+                              ``--GN_factors`` via :func:`_gaussian_noise_sigma_range`.
+    * ``--use_grayscale``     retained for compatibility only: the formal
+                              pipeline always decodes true grayscale
+                              (:func:`load_grayscale_image`) and expands it to
+                              three identical RGB channels.
+
+    Normalization is always ImageNet statistics because the model is
+    initialized from ImageNet-pretrained weights, which expect those stats.
+    """
     _validate_formal_input_size(args)
 
-    if is_train:
+    if not is_train:
         return transforms.Compose(
             [
-                transforms.Pad(
-                    TRANSLATION_PADDING,
-                    padding_mode="reflect",
-                ),
-                transforms.RandomCrop(FORMAL_IMAGE_SIZE),
-                RandomBrightness(BRIGHTNESS_RANGE),
-                RandomContrast(CONTRAST_RANGE),
                 GrayscaleToRGB(),
                 transforms.ToTensor(),
-                SharedChannelGaussianNoise(GAUSSIAN_NOISE_SIGMA_RANGE),
                 transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
             ]
         )
 
-    return transforms.Compose(
-        [
-            GrayscaleToRGB(),
-            transforms.ToTensor(),
-            transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-        ]
-    )
+    steps = [
+        transforms.Pad(
+            TRANSLATION_PADDING,
+            padding_mode="reflect",
+        ),
+        transforms.RandomCrop(FORMAL_IMAGE_SIZE),
+    ]
+    if getattr(args, "HSVEnhance", False):
+        steps.extend(
+            [
+                RandomBrightness(BRIGHTNESS_RANGE),
+                RandomContrast(CONTRAST_RANGE),
+            ]
+        )
+    steps.extend([GrayscaleToRGB(), transforms.ToTensor()])
+    if getattr(args, "add_Gauss_Noise", False):
+        steps.append(SharedChannelGaussianNoise(_gaussian_noise_sigma_range(args)))
+    steps.append(transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD))
+    return transforms.Compose(steps)

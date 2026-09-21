@@ -42,12 +42,15 @@ Each run is stored under `experiments/<UTC timestamp>-<name>/` and records:
 - `stdout.log` and `stderr.log`: complete process output streams
 - `exit_code.txt`: process exit code after completion
 
-The `experiments/latest` symbolic link points to the newest run. The `experiments/` directory is excluded from Git.
+The `experiments/latest` symbolic link points to the newest run; the symlink itself is Git-ignored.
+Only checkpoint weights (`*.pth`) and the `latest` symlink are excluded from Git — each run's
+logs and evaluation artifacts *are* tracked and ship with the repository (see `.gitignore`).
 
 The wrapper also sets `OUTPUT_DIR` to that same run directory before starting the command,
-so checkpoints, TensorBoard logs, `preprocessing_reports/` and `eval-class-acc.txt` are written
-beside the run's own logs rather than into a second output tree. Do not set `OUTPUT_DIR`
-yourself when launching through the wrapper.
+so checkpoints, TensorBoard logs, `preprocessing_reports/`, `eval-class-acc.txt`, and the eval
+diagnostics written by `--eval` runs (`confusion_matrix.csv`, `confusion_matrix_normalized.csv`,
+`eval_predictions.csv`, `eval_misclassified.csv`) are written beside the run's own logs rather
+than into a second output tree. Do not set `OUTPUT_DIR` yourself when launching through the wrapper.
 
 Training parameters that are expected to be tuned per run are read from the environment by
 `train_csd.sh`, so they can be adjusted without editing tracked files on the server:

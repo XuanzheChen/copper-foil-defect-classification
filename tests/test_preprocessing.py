@@ -25,8 +25,19 @@ from datasets import (
 )
 
 
-def _args(input_size=200):
-    return SimpleNamespace(input_size=input_size)
+def _args(
+    input_size=200,
+    hsv_enhance=True,
+    add_gauss_noise=False,
+    gn_factors=(0.0, 25.0),
+):
+    """Baseline configuration mirrors train_csd.sh (HSVEnhance on, noise off)."""
+    return SimpleNamespace(
+        input_size=input_size,
+        HSVEnhance=hsv_enhance,
+        add_Gauss_Noise=add_gauss_noise,
+        GN_factors=list(gn_factors),
+    )
 
 
 def _write_palette_grayscale(path, size=(200, 200)):
@@ -104,7 +115,9 @@ class TransformPipelineTests(unittest.TestCase):
     def setUp(self):
         self.image = Image.new("L", FORMAL_IMAGE_SIZE, 128)
 
-    def test_train_pipeline_has_exact_required_steps_and_ranges(self):
+    def test_train_baseline_pipeline_has_exact_required_steps_and_ranges(self):
+        # Baseline config: HSVEnhance on, Gaussian noise off. Noise is gated by
+        # --add_Gauss_Noise and must NOT appear when the flag is false.
         transform = build_transform(True, _args())
         steps = transform.transforms
 
@@ -124,12 +137,59 @@ class TransformPipelineTests(unittest.TestCase):
         self.assertIsInstance(steps[4], GrayscaleToRGB)
         self.assertEqual(type(steps[5]).__name__, "ToTensor")
 
-        self.assertIsInstance(steps[6], SharedChannelGaussianNoise)
-        self.assertEqual(steps[6].sigma_range, GAUSSIAN_NOISE_SIGMA_RANGE)
+        self.assertEqual(type(steps[6]).__name__, "Normalize")
+        self.assertEqual(tuple(steps[6].mean), IMAGENET_MEAN)
+        self.assertEqual(tuple(steps[6].std), IMAGENET_STD)
 
+    def test_gaussian_noise_is_gated_on_flag_and_maps_gn_factors(self):
+        no_noise = build_transform(True, _args(add_gauss_noise=False))
+        self.assertFalse(
+            any(isinstance(step, SharedChannelGaussianNoise) for step in no_noise.transforms)
+        )
+
+        with_noise = build_transform(True, _args(add_gauss_noise=True))
+        noise_steps = [
+            step for step in with_noise.transforms
+            if isinstance(step, SharedChannelGaussianNoise)
+        ]
+        self.assertEqual(len(noise_steps), 1)
+        # --GN_factors are on the 0..255 pixel scale; the transform works on
+        # [0, 1] tensors, so the upper bound is divided by 255.
+        self.assertEqual(noise_steps[0].sigma_range, (0.0, 25.0 / 255.0))
+
+        custom = build_transform(
+            True, _args(add_gauss_noise=True, gn_factors=(0.0, 50.0))
+        )
+        noise_steps = [
+            step for step in custom.transforms
+            if isinstance(step, SharedChannelGaussianNoise)
+        ]
+        self.assertEqual(noise_steps[0].sigma_range, (0.0, 50.0 / 255.0))
+
+    def test_color_jitter_is_gated_on_hsv_flag(self):
+        with_jitter = build_transform(True, _args(hsv_enhance=True))
+        self.assertTrue(
+            any(isinstance(step, RandomBrightness) for step in with_jitter.transforms)
+        )
+        self.assertTrue(
+            any(isinstance(step, RandomContrast) for step in with_jitter.transforms)
+        )
+
+        without_jitter = build_transform(True, _args(hsv_enhance=False))
+        self.assertFalse(
+            any(isinstance(step, RandomBrightness) for step in without_jitter.transforms)
+        )
+        self.assertFalse(
+            any(isinstance(step, RandomContrast) for step in without_jitter.transforms)
+        )
+
+    def test_noise_lands_after_tensor_before_normalize(self):
+        transform = build_transform(True, _args(add_gauss_noise=True))
+        steps = transform.transforms
+
+        self.assertEqual(type(steps[5]).__name__, "ToTensor")
+        self.assertIsInstance(steps[6], SharedChannelGaussianNoise)
         self.assertEqual(type(steps[7]).__name__, "Normalize")
-        self.assertEqual(tuple(steps[7].mean), IMAGENET_MEAN)
-        self.assertEqual(tuple(steps[7].std), IMAGENET_STD)
 
     def test_train_tensor_shape_channels_and_values_are_valid(self):
         train_transform = build_transform(True, _args())
@@ -196,13 +256,20 @@ class TransformPipelineTests(unittest.TestCase):
             "TrivialAugmentWide",
         }
 
+        configs = [
+            _args(),
+            _args(hsv_enhance=False),
+            _args(add_gauss_noise=True),
+            _args(hsv_enhance=False, add_gauss_noise=True),
+        ]
         for is_train in (True, False):
-            pipeline = build_transform(is_train, _args())
-            actual_names = {type(step).__name__ for step in pipeline.transforms}
-            self.assertTrue(
-                forbidden_names.isdisjoint(actual_names),
-                msg=f"Forbidden transform found: {forbidden_names & actual_names}",
-            )
+            for config in configs:
+                pipeline = build_transform(is_train, config)
+                actual_names = {type(step).__name__ for step in pipeline.transforms}
+                self.assertTrue(
+                    forbidden_names.isdisjoint(actual_names),
+                    msg=f"Forbidden transform found: {forbidden_names & actual_names}",
+                )
 
     def test_input_size_224_is_rejected_instead_of_resized(self):
         with self.assertRaisesRegex(ValueError, "requires --input_size 200"):
