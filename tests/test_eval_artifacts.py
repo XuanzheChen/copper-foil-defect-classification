@@ -23,7 +23,11 @@ from PIL import Image
 from torchvision import transforms
 
 from datasets import CopperFoilImageFolder, build_transform
-from engine_finetune import _classification_report_from_confusion, evaluate
+from engine_finetune import (
+    _classification_report_from_confusion,
+    _write_copper_operating_point_sweep,
+    evaluate,
+)
 
 
 class _FakeLinearModel(torch.nn.Module):
@@ -198,6 +202,42 @@ class EvalArtifactTests(unittest.TestCase):
         self.assertAlmostEqual(report["macro_recall"], 88.0, places=6)
         self.assertAlmostEqual(report["copper_recall"], 80.0, places=6)
         self.assertAlmostEqual(report["copper_precision"], 8 / 9 * 100.0, places=6)
+
+    def test_copper_operating_point_sweep_writes_results_and_can_raise_recall(self):
+        class_names = ["class_a", "class_b", "class_c", "class_d", "铜瘤"]
+        logits = torch.tensor(
+            [
+                [0.0, 0.0, 0.0, 0.0, 3.0],
+                [0.0, 2.0, 0.0, 0.0, 1.8],
+                [0.0, 2.5, 0.0, 0.0, 0.1],
+                [2.5, 0.0, 0.0, 0.0, 0.2],
+            ],
+            dtype=torch.float32,
+        )
+        targets = torch.tensor([4, 4, 1, 0], dtype=torch.long)
+
+        summary = _write_copper_operating_point_sweep(
+            logits,
+            targets,
+            class_names,
+            str(self.tmp),
+            bias_min=0.0,
+            bias_max=0.5,
+            bias_steps=3,
+            threshold_min=0.05,
+            threshold_max=0.5,
+            threshold_steps=4,
+            min_precision=0.0,
+            max_acc_drop=100.0,
+        )
+
+        self.assertTrue((self.tmp / "copper_operating_point_sweep.csv").is_file())
+        self.assertTrue((self.tmp / "copper_operating_point_summary.json").is_file())
+        self.assertAlmostEqual(summary["baseline"]["copper_recall"], 50.0, places=6)
+        self.assertGreaterEqual(
+            summary["recommended"]["copper_recall"],
+            summary["baseline"]["copper_recall"],
+        )
 
     def test_artifacts_are_skipped_when_flags_are_off(self):
         model = _FakeLinearModel(num_classes=5)
