@@ -25,6 +25,11 @@ from optim_factory import create_optimizer, LayerDecayValueAssigner
 
 from datasets import build_dataset
 from engine_finetune import train_one_epoch, evaluate
+from losses import (
+    ClassWeightedCrossEntropy,
+    ClassWeightedLabelSmoothingCrossEntropy,
+    ClassWeightedSoftTargetCrossEntropy,
+)
 
 import utils
 from utils import NativeScalerWithGradNormCount as NativeScaler
@@ -92,6 +97,10 @@ def get_args_parser():
                         help='Use AutoAugment policy. "v0" or "original". " + "(default: rand-m9-mstd0.5-inc1)')
     parser.add_argument('--smoothing', type=float, default=0.1,
                         help='Label smoothing (default: 0.1)')
+    parser.add_argument('--copper_loss_weight', type=float, default=1.0,
+                        help='Training loss weight for the 铜瘤 class. 1.0 preserves the '
+                             'original loss exactly; values > 1 increase the cost of copper '
+                             'target mass, including Mixup/CutMix soft targets.')
     
     parser.add_argument('--train_interpolation', type=str, default='bicubic',
                         help='Training interpolation (random, bilinear, bicubic default: "bicubic")')
@@ -333,6 +342,15 @@ def main(args):
         print(f"An unexpected error occurred: {e}")
         class_list = []
 
+    if args.copper_loss_weight <= 0:
+        raise ValueError(
+            f"--copper_loss_weight must be > 0, got {args.copper_loss_weight}"
+        )
+    if not args.eval and args.copper_loss_weight != 1.0 and "铜瘤" not in class_list:
+        raise ValueError(
+            "--copper_loss_weight != 1.0 requires a 铜瘤 entry in class_labels"
+        )
+
     if args.eval and class_list and dataset_val is not None:
         dataset_classes = getattr(dataset_val, "classes", None)
         if dataset_classes is not None and len(class_list) != len(dataset_classes):
@@ -503,14 +521,33 @@ def main(args):
         get_layer_scale=assigner.get_scale if assigner is not None else None)
     loss_scaler = NativeScaler()
 
-    if mixup_fn is not None:
-        # smoothing is handled with mixup label transform
-        criterion = SoftTargetCrossEntropy()
-    elif args.smoothing > 0.:
-        criterion = LabelSmoothingCrossEntropy(smoothing=args.smoothing)
+    if args.copper_loss_weight == 1.0:
+        # Preserve the historical baseline loss path exactly when cost-sensitive
+        # training is disabled.
+        if mixup_fn is not None:
+            # smoothing is handled with mixup label transform
+            criterion = SoftTargetCrossEntropy()
+        elif args.smoothing > 0.:
+            criterion = LabelSmoothingCrossEntropy(smoothing=args.smoothing)
+        else:
+            criterion = torch.nn.CrossEntropyLoss()
     else:
-        criterion = torch.nn.CrossEntropyLoss()
-    
+        copper_idx = class_list.index("铜瘤")
+        class_weights = torch.ones(args.nb_classes, dtype=torch.float32)
+        class_weights[copper_idx] = args.copper_loss_weight
+        if mixup_fn is not None:
+            criterion = ClassWeightedSoftTargetCrossEntropy(class_weights)
+        elif args.smoothing > 0.:
+            criterion = ClassWeightedLabelSmoothingCrossEntropy(
+                class_weights, smoothing=args.smoothing
+            )
+        else:
+            criterion = ClassWeightedCrossEntropy(class_weights)
+        print(
+            f"Cost-sensitive training enabled: 铜瘤 class index={copper_idx}, "
+            f"loss weight={args.copper_loss_weight:.4f}"
+        )
+
     print("criterion = %s" % str(criterion))
 
     utils.auto_load_model(
