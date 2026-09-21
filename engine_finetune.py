@@ -171,6 +171,41 @@ def _class_name(class_names, idx):
     return str(idx)
 
 
+def _classification_report_from_confusion(confusion, class_names, focus_class_name="铜瘤"):
+    """Compute macro recall and the focus class recall/precision in percent.
+
+    Macro recall averages per-class recall across classes that have at least one
+    ground-truth sample. Precision uses zero_division=0 semantics when the model
+    never predicts the focus class.
+    """
+    if confusion is None or confusion.numel() == 0:
+        return {}
+
+    confusion = confusion.detach().cpu()
+    supports = confusion.sum(dim=1)
+    predicted = confusion.sum(dim=0)
+    true_positive = confusion.diag()
+
+    valid = supports > 0
+    recalls = torch.zeros(confusion.shape[0], dtype=torch.float64)
+    recalls[valid] = true_positive[valid].double() / supports[valid].double()
+    macro_recall = recalls[valid].mean().item() * 100.0 if valid.any() else 0.0
+
+    report = {"macro_recall": macro_recall}
+    labels = [_class_name(class_names, i) for i in range(confusion.shape[0])]
+    if focus_class_name in labels:
+        focus_idx = labels.index(focus_class_name)
+        tp = float(true_positive[focus_idx].item())
+        support = float(supports[focus_idx].item())
+        predicted_count = float(predicted[focus_idx].item())
+        report["copper_recall"] = 100.0 * tp / support if support > 0 else 0.0
+        report["copper_precision"] = (
+            100.0 * tp / predicted_count if predicted_count > 0 else 0.0
+        )
+
+    return report
+
+
 def _display_width(text):
     """Approximate monospace display width (East Asian chars take 2 columns)."""
     return sum(2 if ord(ch) > 0x2E80 else 1 for ch in str(text))
@@ -358,14 +393,8 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
         metric_logger.meters["acc5"].update(acc5.item(), n=batch_size)
 
         preds = output.argmax(dim=1)
-        for cls in torch.unique(target):
-            cls_mask = target == cls
-            class_stats[cls.item()]["total"] += cls_mask.sum().item()
-            class_stats[cls.item()]["correct"] += (preds[cls_mask] == cls).sum().item()
-
-        if save_confusion:
-            for i in range(batch_size):
-                confusion_counts[target[i].item()][preds[i].item()] += 1
+        for i in range(batch_size):
+            confusion_counts[target[i].item()][preds[i].item()] += 1
 
         if save_predictions:
             probs = torch.softmax(output, dim=1)
@@ -420,20 +449,11 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
     )
     print(f"Evaluation speed: {images_per_sec:.2f} images/s")
 
-    for cls, stats in class_stats.items():
-        if stats["total"] > 0:
-            acc = stats["correct"] / stats["total"] * 100
-        else:
-            acc = 0.0
-        stats["accuracy"] = acc
-        num_samples = stats["total"]
-        print(f"With {num_samples} samples, Class {cls}: {acc:.2f}% ")
-
-    # Materialize the square confusion tensor. Size covers both num_classes and
-    # any observed class index, so a mismatch degrades to a larger matrix
-    # instead of crashing.
+    # Materialize the square confusion tensor for every evaluation. Size covers
+    # both num_classes and any observed class index, so a mismatch degrades to a
+    # larger matrix instead of crashing.
     confusion = None
-    if save_confusion and confusion_counts:
+    if confusion_counts:
         observed_max = max(
             max(confusion_counts.keys()),
             max(
@@ -442,7 +462,7 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
             ),
         )
         size = max(observed_max + 1, num_classes if num_classes else 0)
-        confusion = torch.zeros(size, size, dtype=torch.long)
+        confusion = torch.zeros(size, size, dtype=torch.long, device=device)
         for true_idx, inner in confusion_counts.items():
             for pred_idx, count in inner.items():
                 confusion[true_idx, pred_idx] = count
@@ -460,8 +480,23 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
             ]
         else:
             per_sample = []
-    if save_confusion and confusion is not None and num_tasks > 1 and torch.distributed.is_initialized():
+    if confusion is not None and num_tasks > 1 and torch.distributed.is_initialized():
         torch.distributed.all_reduce(confusion)
+    if confusion is not None:
+        confusion = confusion.cpu()
+
+    # Rebuild per-class statistics from the synchronized confusion matrix so
+    # single-GPU and distributed evaluation report exactly the same semantics.
+    if confusion is not None:
+        class_stats = defaultdict(lambda: {"total": 0, "correct": 0, "accuracy": 0})
+        for cls in range(confusion.shape[0]):
+            total = int(confusion[cls].sum().item())
+            correct = int(confusion[cls, cls].item())
+            class_stats[cls]["total"] = total
+            class_stats[cls]["correct"] = correct
+            class_stats[cls]["accuracy"] = (100.0 * correct / total) if total > 0 else 0.0
+
+    report_stats = _classification_report_from_confusion(confusion, class_names)
 
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
@@ -469,13 +504,41 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
         print("WARNING: --output_dir is empty; confusion/prediction artifacts were not written")
 
     if global_rank == 0:
+        for cls in sorted(class_stats):
+            stats = class_stats[cls]
+            print(
+                f"With {stats['total']} samples, Class "
+                f"{_class_name(class_names, cls)}: {stats['accuracy']:.2f}%"
+            )
+
+        if "copper_recall" in report_stats:
+            print(
+                "* Overall Acc@1 {acc1:.3f}% | Macro Recall {macro:.3f}% | "
+                "铜瘤 Recall {recall:.3f}% | 铜瘤 Precision {precision:.3f}%".format(
+                    acc1=metric_logger.acc1.global_avg,
+                    macro=report_stats["macro_recall"],
+                    recall=report_stats["copper_recall"],
+                    precision=report_stats["copper_precision"],
+                )
+            )
+        else:
+            print(
+                "* Overall Acc@1 {acc1:.3f}% | Macro Recall {macro:.3f}% | "
+                "铜瘤 metrics N/A (class label not found)".format(
+                    acc1=metric_logger.acc1.global_avg,
+                    macro=report_stats.get("macro_recall", 0.0),
+                )
+            )
+
         if save_confusion and confusion is not None and output_dir:
             _write_confusion_matrix(confusion, class_names, output_dir)
             _print_confusion_summary(confusion, class_names)
         if save_predictions and per_sample and output_dir:
             _write_predictions(per_sample, class_names, output_dir)
 
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}, class_stats
+    eval_stats = {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+    eval_stats.update(report_stats)
+    return eval_stats, class_stats
 
 
 
