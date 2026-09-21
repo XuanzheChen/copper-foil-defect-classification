@@ -509,7 +509,11 @@ def auto_load_model(args, model, model_without_ddp, optimizer, loss_scaler, mode
             checkpoint = torch.hub.load_state_dict_from_url(
                 args.resume, map_location='cpu', check_hash=True)
         else:
-            checkpoint = torch.load(args.resume, map_location='cpu')
+            # weights_only defaults to True from torch 2.6, which refuses to
+            # unpickle the argparse.Namespace and optimizer state that
+            # save_model() writes into every checkpoint. Resuming and --eval
+            # both go through here, so without this they fail on our own files.
+            checkpoint = torch.load(args.resume, map_location='cpu', weights_only=False)
 
         if args.load_encoder_only:
             pretrained_bias = checkpoint['model']['stages.0.0.dwconv.bias']
@@ -637,6 +641,11 @@ def remap_checkpoint_keys(ckpt):
     for k, v in new_ckpt.items():
         if k.endswith('bias') and len(v.shape) != 1:
             new_ckpt[k] = v.reshape(-1)
-        elif 'grn' in k:
+        elif 'grn' in k and v.dim() == 2:
+            # MinkowskiEngine's sparse GRN keeps its affine as (1, dim) and the
+            # dense model wants (1, 1, 1, dim). A dense checkpoint -- such as the
+            # released ImageNet weights -- already stores the 4-D form, so
+            # expanding it here produces a 5-D tensor that matches nothing and
+            # every GRN weight silently stays at its zero initialisation.
             new_ckpt[k] = v.unsqueeze(0).unsqueeze(1)
     return new_ckpt
