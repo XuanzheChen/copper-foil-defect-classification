@@ -42,6 +42,28 @@ class WeightedLossTests(unittest.TestCase):
         self.assertTrue(torch.allclose(weighted - base, copper_term, atol=1e-7))
         self.assertGreater(weighted.item(), base.item())
 
+    @unittest.skipUnless(torch.cuda.is_available(), "CUDA is required for device regression test")
+    def test_soft_target_accepts_cpu_weights_with_cuda_logits(self):
+        # Regression for the remote training crash: criterion/buffer starts on
+        # CPU while logits and Mixup soft targets are already on cuda:0.
+        criterion = ClassWeightedSoftTargetCrossEntropy([1.0, 1.0, 1.5])
+        logits = torch.tensor(
+            [[1.2, 0.4, -0.2], [0.1, 0.3, 1.5]],
+            dtype=torch.float32,
+            device="cuda",
+            requires_grad=True,
+        )
+        target = torch.tensor(
+            [[0.7, 0.0, 0.3], [0.0, 0.4, 0.6]],
+            dtype=torch.float32,
+            device="cuda",
+        )
+        loss = criterion(logits, target)
+        self.assertEqual(loss.device.type, "cuda")
+        self.assertTrue(torch.isfinite(loss))
+        loss.backward()
+        self.assertTrue(torch.isfinite(logits.grad).all())
+
     def test_hard_label_weight_scales_copper_sample_cost(self):
         logits = torch.tensor([[0.2, 1.5], [1.0, 0.4]], dtype=torch.float32)
         target = torch.tensor([1, 0], dtype=torch.long)
