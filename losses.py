@@ -33,8 +33,12 @@ class ClassWeightedSoftTargetCrossEntropy(nn.Module):
                 f"got target={tuple(target.shape)} logits={tuple(logits.shape)}"
             )
         log_probs = F.log_softmax(logits, dim=-1)
-        weights = self.class_weights.to(dtype=log_probs.dtype)
-        return -(target.to(log_probs.dtype) * weights * log_probs).sum(dim=-1).mean()
+        weights = self.class_weights.to(
+            device=log_probs.device,
+            dtype=log_probs.dtype,
+        )
+        target = target.to(device=log_probs.device, dtype=log_probs.dtype)
+        return -(target * weights * log_probs).sum(dim=-1).mean()
 
 
 class ClassWeightedLabelSmoothingCrossEntropy(nn.Module):
@@ -74,7 +78,10 @@ class ClassWeightedLabelSmoothingCrossEntropy(nn.Module):
             )
 
         log_probs = F.log_softmax(logits, dim=-1)
-        weights = self.class_weights.to(dtype=log_probs.dtype)
+        weights = self.class_weights.to(
+            device=log_probs.device,
+            dtype=log_probs.dtype,
+        )
         return -(soft_target * weights * log_probs).sum(dim=-1).mean()
 
 
@@ -91,6 +98,8 @@ class ClassWeightedCrossEntropy(nn.Module):
         self.register_buffer("class_weights", weights)
 
     def forward(self, logits, target):
+        target = target.to(device=logits.device)
         losses = F.cross_entropy(logits, target, reduction="none")
-        sample_weights = self.class_weights[target].to(dtype=losses.dtype)
+        weights = self.class_weights.to(device=logits.device)
+        sample_weights = weights[target].to(dtype=losses.dtype)
         return (losses * sample_weights).mean()
