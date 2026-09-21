@@ -6,12 +6,12 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 if [[ $# -lt 1 || $# -gt 2 ]]; then
   cat >&2 <<'USAGE'
-Usage: eval.sh <experiment-name> [training-run-id]
+Usage: eval.sh <experiment-name> <training-run-id>
 
   experiment-name     name for this evaluation, evaluated in its own run
                       directory so it keeps its own commit and exit code
   training-run-id     training experiment to read checkpoint-best.pth from
-                      (default: experiments/latest)
+                      (required)
 
 Environment overrides, all optional:
   EVAL_CKPT           explicit checkpoint path, overrides training-run-id
@@ -27,12 +27,17 @@ cd "$REPO_ROOT"
 
 eval_split="${EVAL_SPLIT:-test}"
 
+# A checkpoint must be named explicitly. The old default of experiments/latest
+# is deliberately gone: start-experiment.sh repoints that symlink at this run's
+# own directory, so a default resolved to it can vanish before the background
+# worker reads it (FileNotFoundError). Pass the training run id or EVAL_CKPT.
 if [[ -n "${EVAL_CKPT:-}" ]]; then
   checkpoint="$EVAL_CKPT"
 elif [[ $# -eq 2 ]]; then
   checkpoint="$REPO_ROOT/experiments/$2/checkpoint-best.pth"
 else
-  checkpoint="$REPO_ROOT/experiments/latest/checkpoint-best.pth"
+  echo "ERROR: no checkpoint specified. Pass the training-run-id as the second argument or set EVAL_CKPT." >&2
+  exit 2
 fi
 
 if [[ ! -f "$checkpoint" ]]; then

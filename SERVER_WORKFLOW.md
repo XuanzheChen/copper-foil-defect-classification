@@ -69,14 +69,17 @@ through `start-experiment.sh`, so every run keeps its commit, command, exit code
 
 ```bash
 ./scripts/train.sh 20260921-1130-csd-baseline
-./scripts/eval.sh  20260921-1700-csd-baseline-test
+./scripts/eval.sh  20260921-1700-csd-baseline-test 20260921T113000Z-csd-baseline
 ```
 
-`eval.sh` defaults to the best checkpoint of `experiments/latest` on the test split. It
-reads `model`, `input_size` and `nb_classes` back out of the checkpoint rather than
-trusting a default, because a mismatched `--model` would otherwise be loaded silently and
-still report a plausible accuracy. Name a different training run as a second argument, or
-set `EVAL_CKPT` to a checkpoint path and `EVAL_SPLIT=val` to score the validation split.
+`eval.sh` requires the training run to be named explicitly as the second argument: it
+scores that run's `checkpoint-best.pth` on the test split. The `experiments/latest`
+default was removed on purpose — `start-experiment.sh` repoints that symlink at the run
+being launched, so a default resolved to it could vanish before the background worker
+reads it. Alternatively set `EVAL_CKPT` to a checkpoint path and `EVAL_SPLIT=val` to score
+the validation split. It reads `model`, `input_size` and `nb_classes` back out of the
+checkpoint rather than trusting a default, because a mismatched `--model` would otherwise
+be loaded silently and still report a plausible accuracy.
 
 Add `-watch` to either launcher to follow the run in the terminal:
 
