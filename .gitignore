@@ -37,3 +37,6 @@ Thumbs.db
 .server.json
 downloaded-logs/
 experiments/
+
+# Documentation dropped on the training server; reports belong in the project repo
+docs/

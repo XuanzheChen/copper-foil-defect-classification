@@ -40,6 +40,9 @@ nohup bash -c '
   run_dir="$1"
   shift
   set +e
+  # The wrapper owns OUTPUT_DIR so checkpoints, tensorboard logs and eval
+  # reports land inside this run directory instead of a separate tree.
+  export OUTPUT_DIR="$run_dir"
   "$@" >"$run_dir/stdout.log" 2>"$run_dir/stderr.log"
   code=$?
   printf "%s\n" "$code" >"$run_dir/exit_code.txt"
@@ -53,5 +56,7 @@ ln -sfn "$run_dir" "$repo_root/experiments/latest"
 
 echo "RUN_ID=$run_id"
 echo "PID=$pid"
+echo "RUN_DIR=$run_dir"
+echo "OUTPUT_DIR=$run_dir"
 echo "STDOUT=$run_dir/stdout.log"
 echo "STDERR=$run_dir/stderr.log"

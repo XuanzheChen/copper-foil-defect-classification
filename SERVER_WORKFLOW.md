@@ -44,6 +44,18 @@ Each run is stored under `experiments/<UTC timestamp>-<name>/` and records:
 
 The `experiments/latest` symbolic link points to the newest run. The `experiments/` directory is excluded from Git.
 
+The wrapper also sets `OUTPUT_DIR` to that same run directory before starting the command,
+so checkpoints, TensorBoard logs, `preprocessing_reports/` and `eval-class-acc.txt` are written
+beside the run's own logs rather than into a second output tree. Do not set `OUTPUT_DIR`
+yourself when launching through the wrapper.
+
+Training parameters that are expected to be tuned per run are read from the environment by
+`train_csd.sh`, so they can be adjusted without editing tracked files on the server:
+
+```bash
+BATCH_SIZE=64 EPOCHS=100 ./scripts/start-experiment.sh csd-baseline -- bash train_csd.sh
+```
+
 ## Viewing logs locally
 
 List experiment IDs:

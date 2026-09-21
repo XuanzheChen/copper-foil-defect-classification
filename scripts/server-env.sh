@@ -2,7 +2,12 @@
 
 # Source this file before running experiments on S635Remote.
 export PROJECT_ROOT="${PROJECT_ROOT:-/home/cxz/projects/copper-foil-defect-classification}"
-export DATA_PATH="${DATA_PATH:-/share/data/cxz/copper-foil-defect-classification}"
+export DATA_PATH="${DATA_PATH:-/share/data/cxz/copper-foil-defect-classification/0921-formal-split}"
+export CLASS_LABELS="${CLASS_LABELS:-$PROJECT_ROOT/configs/class_labels_csd.txt}"
+export PRETRAINED_WEIGHT="${PRETRAINED_WEIGHT:-$PROJECT_ROOT/pretrained-weights/convnextv2_tiny_1k_224_ema.pt}"
+# scripts/start-experiment.sh overrides OUTPUT_DIR with the run directory, so
+# checkpoints land beside that run's logs. This default only applies when
+# main_finetune.py is invoked without the wrapper.
 export OUTPUT_DIR="${OUTPUT_DIR:-$PROJECT_ROOT/outputs/convnextv2-csd}"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export PYTHONUNBUFFERED="${PYTHONUNBUFFERED:-1}"
