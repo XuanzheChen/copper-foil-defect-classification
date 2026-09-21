@@ -116,7 +116,7 @@ class ResumeCheckpointTests(unittest.TestCase):
             model=model,
             model_without_ddp=model,
             optimizer=torch.optim.SGD(model.parameters(), lr=0.1),
-            loss_scaler=utils.NativeScaler(),
+            loss_scaler=utils.NativeScalerWithGradNormCount(),
         )
 
         checkpoint_path = self.output_dir / "checkpoint-0.pth"
@@ -128,7 +128,7 @@ class ResumeCheckpointTests(unittest.TestCase):
             model=fresh,
             model_without_ddp=fresh,
             optimizer=torch.optim.SGD(fresh.parameters(), lr=0.1),
-            loss_scaler=utils.NativeScaler(),
+            loss_scaler=utils.NativeScalerWithGradNormCount(),
         )
 
         self.assertTrue(torch.equal(fresh.head.weight, model.head.weight))
@@ -143,7 +143,7 @@ class ResumeCheckpointTests(unittest.TestCase):
             model=model,
             model_without_ddp=model,
             optimizer=torch.optim.SGD(model.parameters(), lr=0.1),
-            loss_scaler=utils.NativeScaler(),
+            loss_scaler=utils.NativeScalerWithGradNormCount(),
         )
 
         # The eval launcher reads these back so it cannot silently evaluate with
