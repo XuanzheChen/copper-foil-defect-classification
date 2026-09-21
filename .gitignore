@@ -36,4 +36,7 @@ Thumbs.db
 # Local server connection settings and downloaded experiment logs
 .server.json
 downloaded-logs/
-experiments/
+
+# Experiment outputs: track logs and reports, but keep checkpoints out.
+# Checkpoint weights (*.pth/*.pt/*.ckpt) are already ignored above.
+experiments/latest
