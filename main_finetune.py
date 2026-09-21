@@ -689,6 +689,7 @@ def main(args):
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                          **{f'val_{k}': v for k, v in val_stats.items()},
                          'epoch': epoch,
+                         'copper_loss_weight': args.copper_loss_weight,
                          'n_parameters': n_parameters,
                          'trainable_parameters': trainable_parameters}
             
@@ -734,6 +735,7 @@ def main(args):
         else:
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                         'epoch': epoch,
+                        'copper_loss_weight': args.copper_loss_weight,
                         'n_parameters': n_parameters,
                          'trainable_parameters': trainable_parameters}
         
