@@ -174,6 +174,21 @@ def get_args_parser():
                         help='In --eval mode, save confusion matrices (count + row-normalized CSV) and print a summary. The per-epoch validation loop never writes these.')
     parser.add_argument('--save_eval_predictions', type=str2bool, default=True,
                         help='In --eval mode, save per-sample predictions (eval_predictions.csv / eval_misclassified.csv). The per-epoch validation loop never writes these.')
+    parser.add_argument('--copper_sweep', type=str2bool, default=False,
+                        help='In --eval mode, sweep 铜瘤 logit bias and one-vs-rest probability thresholds.')
+    parser.add_argument('--copper_bias_min', type=float, default=0.0)
+    parser.add_argument('--copper_bias_max', type=float, default=5.0)
+    parser.add_argument('--copper_bias_steps', type=int, default=101)
+    parser.add_argument('--copper_threshold_min', type=float, default=0.001)
+    parser.add_argument('--copper_threshold_max', type=float, default=0.5)
+    parser.add_argument('--copper_threshold_steps', type=int, default=100)
+    parser.add_argument('--copper_sweep_min_precision', type=float, default=98.0,
+                        help='Precision floor used only to mark/recommend sweep operating points.')
+    parser.add_argument('--copper_sweep_max_acc_drop', type=float, default=0.10,
+                        help='Maximum Overall Acc@1 drop in percentage points for recommended sweep points.')
+    parser.add_argument('--best_acc_tolerance', type=float, default=0.10,
+                        help='Checkpoint selection Acc@1 tolerance band in percentage points. '
+                             'Within the band from the best Acc@1 seen so far, prefer higher 铜瘤 Recall.')
 
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int,
@@ -209,6 +224,66 @@ def get_args_parser():
     parser.add_argument('class_labels', type=str, help="Path to class_labels.txt")
 
     return parser
+
+
+def _checkpoint_metrics(val_stats):
+    return {
+        "acc1": float(val_stats["acc1"]),
+        "macro_recall": float(val_stats["macro_recall"]),
+        "copper_recall": float(val_stats["copper_recall"]),
+        "copper_precision": float(val_stats["copper_precision"]),
+    }
+
+
+def _should_update_best_checkpoint(candidate, selected, max_acc_seen, acc_tolerance):
+    """Select a business-aware checkpoint without allowing accuracy drift.
+
+    Candidates must stay within acc_tolerance percentage points of the highest
+    Acc@1 observed at any epoch. Inside that fixed band, ranking is
+    lexicographic: 铜瘤 Recall, 铜瘤 Precision, Macro Recall, then Acc@1.
+    """
+    floor = max_acc_seen - acc_tolerance
+    if candidate["acc1"] < floor - 1e-12:
+        return False
+    if selected is None or selected["acc1"] < floor - 1e-12:
+        return True
+    candidate_rank = (
+        candidate["copper_recall"],
+        candidate["copper_precision"],
+        candidate["macro_recall"],
+        candidate["acc1"],
+    )
+    selected_rank = (
+        selected["copper_recall"],
+        selected["copper_precision"],
+        selected["macro_recall"],
+        selected["acc1"],
+    )
+    return candidate_rank > selected_rank
+
+
+def _write_best_checkpoint_record(output_dir, epoch, metrics, max_acc_seen, acc_tolerance,
+                                  filename="best-checkpoint-selection.json"):
+    if not output_dir or not utils.is_main_process():
+        return
+    payload = {
+        "epoch": epoch,
+        "selection_policy": {
+            "acc_tolerance_pp": acc_tolerance,
+            "eligibility": "acc1 >= max_acc_seen - acc_tolerance_pp",
+            "tie_break_order": [
+                "copper_recall",
+                "copper_precision",
+                "macro_recall",
+                "acc1",
+            ],
+        },
+        "max_acc_seen": max_acc_seen,
+        "selected_metrics": metrics,
+    }
+    with open(os.path.join(output_dir, filename), "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2)
+
 
 def main(args):
     utils.init_distributed_mode(args)
@@ -445,7 +520,7 @@ def main(args):
     if args.eval:
         print(f"Eval only mode")
         val_stats, acc_info = evaluate(
-            data_loader_val, model, device,
+            data_loader_val, model, device, use_amp=args.use_amp,
             output_dir=args.output_dir,
             save_predictions=args.save_eval_predictions,
             save_confusion=args.confusion_matrix,
@@ -453,6 +528,15 @@ def main(args):
             num_classes=args.nb_classes,
             num_tasks=num_tasks,
             global_rank=global_rank,
+            copper_sweep=args.copper_sweep,
+            copper_bias_min=args.copper_bias_min,
+            copper_bias_max=args.copper_bias_max,
+            copper_bias_steps=args.copper_bias_steps,
+            copper_threshold_min=args.copper_threshold_min,
+            copper_threshold_max=args.copper_threshold_max,
+            copper_threshold_steps=args.copper_threshold_steps,
+            copper_sweep_min_precision=args.copper_sweep_min_precision,
+            copper_sweep_max_acc_drop=args.copper_sweep_max_acc_drop,
         )
         with open(os.path.join(args.output_dir, "eval-class-acc.txt"), "w", encoding="utf-8") as f:
                 f.write(f"Overall Acc@1: {val_stats['acc1']:.5f}%\n")
@@ -475,8 +559,10 @@ def main(args):
         return
     
     max_accuracy = 0.0
+    best_checkpoint_metrics = None
     if args.model_ema and args.model_ema_eval:
         max_accuracy_ema = 0.0
+        best_checkpoint_metrics_ema = None
 
     print("Start training for %d epochs" % args.epochs)
     start_time = time.time()
@@ -525,13 +611,35 @@ def main(args):
                     class_name = class_list[cls]
                     f.write(f"With {num_samples} samples, Class {class_name}: {acc:.2f}%\n")
                 f.write("\n")
-            if max_accuracy < val_stats["acc1"]:
-                max_accuracy = val_stats["acc1"]
+            candidate_metrics = _checkpoint_metrics(val_stats)
+            max_accuracy = max(max_accuracy, candidate_metrics["acc1"])
+            if _should_update_best_checkpoint(
+                candidate_metrics,
+                best_checkpoint_metrics,
+                max_accuracy,
+                args.best_acc_tolerance,
+            ):
+                best_checkpoint_metrics = candidate_metrics
                 if args.output_dir and args.save_ckpt:
                     utils.save_model(
                         args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                         loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
-            print(f'Max accuracy: {max_accuracy:.2f}%')
+                _write_best_checkpoint_record(
+                    args.output_dir,
+                    epoch,
+                    best_checkpoint_metrics,
+                    max_accuracy,
+                    args.best_acc_tolerance,
+                )
+                print(
+                    "Updated checkpoint-best.pth at epoch {epoch}: Acc@1 {acc1:.3f}% | "
+                    "铜瘤 Recall {copper_recall:.3f}% | 铜瘤 Precision {copper_precision:.3f}% | "
+                    "Macro Recall {macro_recall:.3f}%".format(epoch=epoch, **best_checkpoint_metrics)
+                )
+            print(
+                f"Max accuracy seen: {max_accuracy:.2f}% | "
+                f"selection floor: {max_accuracy - args.best_acc_tolerance:.2f}%"
+            )
 
             if log_writer is not None:
                 log_writer.update(val_acc1=val_stats['acc1'], head="perf", step=epoch)
@@ -555,13 +663,34 @@ def main(args):
                     num_tasks=num_tasks, global_rank=global_rank,
                 )
                 print(f"Accuracy of the model EMA on {len(dataset_val)} val images: {val_stats_ema['acc1']:.1f}%")
-                if max_accuracy_ema < val_stats_ema["acc1"]:
-                    max_accuracy_ema = val_stats_ema["acc1"]
+                candidate_metrics_ema = _checkpoint_metrics(val_stats_ema)
+                max_accuracy_ema = max(max_accuracy_ema, candidate_metrics_ema["acc1"])
+                if _should_update_best_checkpoint(
+                    candidate_metrics_ema,
+                    best_checkpoint_metrics_ema,
+                    max_accuracy_ema,
+                    args.best_acc_tolerance,
+                ):
+                    best_checkpoint_metrics_ema = candidate_metrics_ema
                     if args.output_dir and args.save_ckpt:
                         utils.save_model(
                             args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                             loss_scaler=loss_scaler, epoch="best-ema", model_ema=model_ema)
-                    print(f'Max EMA accuracy: {max_accuracy_ema:.2f}%')
+                    _write_best_checkpoint_record(
+                        args.output_dir,
+                        epoch,
+                        best_checkpoint_metrics_ema,
+                        max_accuracy_ema,
+                        args.best_acc_tolerance,
+                        filename="best-ema-checkpoint-selection.json",
+                    )
+                    print(
+                        "Updated checkpoint-best-ema.pth at epoch {epoch}: Acc@1 {acc1:.3f}% | "
+                        "铜瘤 Recall {copper_recall:.3f}% | 铜瘤 Precision {copper_precision:.3f}% | "
+                        "Macro Recall {macro_recall:.3f}%".format(
+                            epoch=epoch, **best_checkpoint_metrics_ema
+                        )
+                    )
                 if log_writer is not None:
                     log_writer.update(test_acc1_ema=val_stats_ema['acc1'], head="perf", step=epoch)
                 log_stats.update({**{f'val_{k}_ema': v for k, v in val_stats_ema.items()}})
