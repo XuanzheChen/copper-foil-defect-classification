@@ -9,7 +9,9 @@ DATA_PATH="${DATA_PATH:-/path/to/dataset_root}"
 CLASS_LABELS="${CLASS_LABELS:-$SCRIPT_DIR/configs/class_labels_csd.txt}"
 PRETRAINED_WEIGHT="${PRETRAINED_WEIGHT:-/path/to/convnextv2_tiny_1k_224_ema.pt}"
 OUTPUT_DIR="${OUTPUT_DIR:-./outputs/convnextv2-csd}"
-BATCH_SIZE="${BATCH_SIZE:-128}"
+MODEL="${MODEL:-convnextv2_tiny}"
+BATCH_SIZE="${BATCH_SIZE:-32}"
+UPDATE_FREQ="${UPDATE_FREQ:-4}"
 EPOCHS="${EPOCHS:-200}"
 
 # --input_size must stay 200. datasets.py raises on any other value, because the
@@ -17,11 +19,17 @@ EPOCHS="${EPOCHS:-200}"
 # --use_grayscale / --HSVEnhance / --add_Gauss_Noise are inert placeholders kept
 # for argument compatibility: grayscale decoding, brightness/contrast jitter and
 # Gaussian noise are all hardcoded in datasets.py now.
+#
+# 200x200 carries 4.3x the pixels of the 96x96 these settings were tuned at, and
+# batch 128 exhausted the 16 GB card on the first backward pass. BATCH_SIZE and
+# UPDATE_FREQ are coupled and must move together: 32 x 4 holds the effective
+# batch at 128 and the actual lr at 1.6e-3, which is what --blr 3.2e-3 yields at
+# an effective batch of 128. Changing one alone silently rescales the lr.
 
 python main_finetune.py \
-  --model convnextv2_fusion_grn_sa_tiny \
+  --model "$MODEL" \
   --batch_size "$BATCH_SIZE" \
-  --update_freq 1 \
+  --update_freq "$UPDATE_FREQ" \
   --blr 3.2e-3 \
   --epochs "$EPOCHS" \
   --input_size 200 \

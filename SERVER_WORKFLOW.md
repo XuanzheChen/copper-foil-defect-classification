@@ -53,8 +53,40 @@ Training parameters that are expected to be tuned per run are read from the envi
 `train_csd.sh`, so they can be adjusted without editing tracked files on the server:
 
 ```bash
-BATCH_SIZE=64 EPOCHS=100 ./scripts/start-experiment.sh csd-baseline -- bash train_csd.sh
+MODEL=convnextv2_tiny BATCH_SIZE=32 UPDATE_FREQ=4 EPOCHS=100 \
+  ./scripts/start-experiment.sh csd-baseline -- bash train_csd.sh
 ```
+
+`BATCH_SIZE` and `UPDATE_FREQ` are coupled: they multiply into the effective batch, and
+`--blr` is scaled by that product, so changing one alone silently rescales the learning
+rate.
+
+## One-command launchers
+
+`scripts/train.sh` and `scripts/eval.sh` wrap the commands above so a run can be started
+without retyping paths. Both source `scripts/server-env.sh` themselves and both still go
+through `start-experiment.sh`, so every run keeps its commit, command, exit code and logs.
+
+```bash
+./scripts/train.sh 20260921-1130-csd-baseline
+./scripts/eval.sh  20260921-1700-csd-baseline-test
+```
+
+`eval.sh` defaults to the best checkpoint of `experiments/latest` on the test split. It
+reads `model`, `input_size` and `nb_classes` back out of the checkpoint rather than
+trusting a default, because a mismatched `--model` would otherwise be loaded silently and
+still report a plausible accuracy. Name a different training run as a second argument, or
+set `EVAL_CKPT` to a checkpoint path and `EVAL_SPLIT=val` to score the validation split.
+
+Add `-watch` to either launcher to follow the run in the terminal:
+
+```bash
+./scripts/train-watch.sh 20260921-1130-csd-baseline
+```
+
+The worker is detached before the tail starts, so closing the terminal or pressing Ctrl+C
+stops the tail only. Reattach at any time with
+`tail -F experiments/latest/stdout.log`.
 
 ## Viewing logs locally
 
