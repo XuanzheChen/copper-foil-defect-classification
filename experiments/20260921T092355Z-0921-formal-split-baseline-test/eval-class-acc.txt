@@ -1,0 +1,10 @@
+With 494 samples, Class 凹凸点: 99.80%
+With 492 samples, Class 刮伤: 99.59%
+With 605 samples, Class 异物: 99.67%
+With 233 samples, Class 气泡: 98.28%
+With 60 samples, Class 结晶: 93.33%
+With 169 samples, Class 针孔: 97.04%
+With 277 samples, Class 铜瘤: 94.22%
+With 525 samples, Class 陨石坑: 99.05%
+With 222 samples, Class 黑点: 98.20%
+

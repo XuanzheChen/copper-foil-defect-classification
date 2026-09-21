@@ -1,0 +1,2 @@
+/home/cxz/projects/copper-foil-defect-classification/utils.py:413: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  self._scaler = torch.cuda.amp.GradScaler()
