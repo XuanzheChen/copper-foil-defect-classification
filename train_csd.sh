@@ -14,6 +14,7 @@ BATCH_SIZE="${BATCH_SIZE:-32}"
 UPDATE_FREQ="${UPDATE_FREQ:-4}"
 EPOCHS="${EPOCHS:-200}"
 BEST_ACC_TOLERANCE="${BEST_ACC_TOLERANCE:-0.10}"
+COPPER_LOSS_WEIGHT="${COPPER_LOSS_WEIGHT:-1.0}"
 
 # --input_size must stay 200. datasets.py raises on any other value, because the
 # formal copper-foil pipeline forbids resize and keeps the native 200x200 scale.
@@ -42,6 +43,7 @@ python main_finetune.py \
   --blr 3.2e-3 \
   --epochs "$EPOCHS" \
   --best_acc_tolerance "$BEST_ACC_TOLERANCE" \
+  --copper_loss_weight "$COPPER_LOSS_WEIGHT" \
   --input_size 200 \
   --nb_classes 9 \
   --warmup_epochs 30 \
