@@ -7,6 +7,7 @@
 
 
 import csv
+import json
 import math
 import os
 from collections import defaultdict
@@ -206,6 +207,182 @@ def _classification_report_from_confusion(confusion, class_names, focus_class_na
     return report
 
 
+def _confusion_from_predictions(targets, predictions, num_classes):
+    """Build a CPU confusion matrix from flat target/prediction tensors."""
+    flat = targets.to(torch.long).cpu() * num_classes + predictions.to(torch.long).cpu()
+    counts = torch.bincount(flat, minlength=num_classes * num_classes)
+    return counts.reshape(num_classes, num_classes)
+
+
+def _metrics_from_predictions(targets, predictions, class_names, copper_idx):
+    """Return classification metrics used by copper operating-point sweeps."""
+    num_classes = len(class_names)
+    confusion = _confusion_from_predictions(targets, predictions, num_classes)
+    report = _classification_report_from_confusion(confusion, class_names)
+    total = int(confusion.sum().item())
+    correct = int(confusion.diag().sum().item())
+    tp = int(confusion[copper_idx, copper_idx].item())
+    fp = int(confusion[:, copper_idx].sum().item()) - tp
+    fn = int(confusion[copper_idx, :].sum().item()) - tp
+    predicted = int(confusion[:, copper_idx].sum().item())
+    return {
+        "overall_acc1": 100.0 * correct / total if total else 0.0,
+        "macro_recall": report["macro_recall"],
+        "copper_recall": report["copper_recall"],
+        "copper_precision": report["copper_precision"],
+        "copper_predicted": predicted,
+        "copper_tp": tp,
+        "copper_fp": fp,
+        "copper_fn": fn,
+    }
+
+
+def _write_copper_operating_point_sweep(
+    logits,
+    targets,
+    class_names,
+    output_dir,
+    bias_min=0.0,
+    bias_max=5.0,
+    bias_steps=101,
+    threshold_min=0.001,
+    threshold_max=0.5,
+    threshold_steps=100,
+    min_precision=98.0,
+    max_acc_drop=0.10,
+):
+    """Sweep copper-class logit bias and one-vs-rest probability thresholds.
+
+    Bias mode adds a constant to the copper logit before argmax.
+    Threshold mode predicts copper when p(copper) >= threshold; otherwise it
+    chooses the best non-copper class. Results are written to CSV plus a JSON
+    summary containing the best recall point that respects the configured
+    precision floor and maximum Acc@1 drop from the unmodified baseline.
+    """
+    if logits.numel() == 0 or targets.numel() == 0:
+        return None
+
+    labels = [str(name) for name in class_names]
+    if "铜瘤" not in labels:
+        print("WARNING: copper sweep skipped because class label 铜瘤 was not found")
+        return None
+
+    copper_idx = labels.index("铜瘤")
+    logits = logits.float().cpu()
+    targets = targets.long().cpu()
+    base_predictions = logits.argmax(dim=1)
+    baseline = _metrics_from_predictions(targets, base_predictions, labels, copper_idx)
+
+    rows = []
+
+    def add_row(mode, value, metrics):
+        eligible = (
+            metrics["copper_precision"] >= min_precision
+            and metrics["overall_acc1"] >= baseline["overall_acc1"] - max_acc_drop
+        )
+        rows.append(
+            {
+                "mode": mode,
+                "value": value,
+                **metrics,
+                "recall_gain": metrics["copper_recall"] - baseline["copper_recall"],
+                "precision_change": metrics["copper_precision"] - baseline["copper_precision"],
+                "acc1_change": metrics["overall_acc1"] - baseline["overall_acc1"],
+                "eligible": int(eligible),
+            }
+        )
+
+    add_row("baseline", "", baseline)
+
+    for bias in torch.linspace(float(bias_min), float(bias_max), max(int(bias_steps), 1)):
+        adjusted = logits.clone()
+        adjusted[:, copper_idx] += float(bias.item())
+        predictions = adjusted.argmax(dim=1)
+        add_row(
+            "logit_bias",
+            float(bias.item()),
+            _metrics_from_predictions(targets, predictions, labels, copper_idx),
+        )
+
+    probabilities = torch.softmax(logits, dim=1)
+    copper_probability = probabilities[:, copper_idx]
+    non_copper_logits = logits.clone()
+    non_copper_logits[:, copper_idx] = float("-inf")
+    best_non_copper = non_copper_logits.argmax(dim=1)
+
+    for threshold in torch.linspace(
+        float(threshold_min), float(threshold_max), max(int(threshold_steps), 1)
+    ):
+        threshold_value = float(threshold.item())
+        predictions = best_non_copper.clone()
+        predictions[copper_probability >= threshold_value] = copper_idx
+        add_row(
+            "prob_threshold",
+            threshold_value,
+            _metrics_from_predictions(targets, predictions, labels, copper_idx),
+        )
+
+    eligible_rows = [row for row in rows if row["eligible"]]
+    recommended = max(
+        eligible_rows,
+        key=lambda row: (
+            row["copper_recall"],
+            row["copper_precision"],
+            row["macro_recall"],
+            row["overall_acc1"],
+        ),
+        default=rows[0],
+    )
+
+    os.makedirs(output_dir, exist_ok=True)
+    csv_path = os.path.join(output_dir, "copper_operating_point_sweep.csv")
+    fieldnames = [
+        "mode",
+        "value",
+        "overall_acc1",
+        "macro_recall",
+        "copper_recall",
+        "copper_precision",
+        "copper_predicted",
+        "copper_tp",
+        "copper_fp",
+        "copper_fn",
+        "recall_gain",
+        "precision_change",
+        "acc1_change",
+        "eligible",
+    ]
+    with open(csv_path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    summary = {
+        "constraints": {
+            "min_copper_precision": min_precision,
+            "max_overall_acc1_drop": max_acc_drop,
+        },
+        "baseline": rows[0],
+        "recommended": recommended,
+    }
+    json_path = os.path.join(output_dir, "copper_operating_point_summary.json")
+    with open(json_path, "w", encoding="utf-8") as handle:
+        json.dump(summary, handle, ensure_ascii=False, indent=2)
+
+    print(f"Wrote copper operating-point sweep: {csv_path}")
+    print(f"Wrote copper operating-point summary: {json_path}")
+    print(
+        "Copper sweep baseline — Acc@1 {overall_acc1:.3f}% | Recall {copper_recall:.3f}% | "
+        "Precision {copper_precision:.3f}%".format(**baseline)
+    )
+    print(
+        "Copper sweep recommended — {mode}={value} | Acc@1 {overall_acc1:.3f}% | "
+        "Recall {copper_recall:.3f}% | Precision {copper_precision:.3f}% | "
+        "Recall gain {recall_gain:+.3f} pp".format(**recommended)
+    )
+    return summary
+
+
 def _display_width(text):
     """Approximate monospace display width (East Asian chars take 2 columns)."""
     return sum(2 if ord(ch) > 0x2E80 else 1 for ch in str(text))
@@ -312,7 +489,11 @@ def _print_confusion_summary(confusion, class_names):
 @torch.no_grad()
 def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
              save_predictions=False, save_confusion=False, class_names=None,
-             num_classes=None, num_tasks=1, global_rank=0):
+             num_classes=None, num_tasks=1, global_rank=0,
+             copper_sweep=False, copper_bias_min=0.0, copper_bias_max=5.0,
+             copper_bias_steps=101, copper_threshold_min=0.001,
+             copper_threshold_max=0.5, copper_threshold_steps=100,
+             copper_sweep_min_precision=98.0, copper_sweep_max_acc_drop=0.10):
     """Evaluate the model and, when asked, dump diagnostic artifacts.
 
     ``save_confusion`` writes count and row-normalized confusion matrices and
@@ -358,6 +539,8 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
                       "will have no file paths")
 
     per_sample = []
+    sweep_logits = []
+    sweep_targets = []
     sample_cursor = 0  # flat position across batches on this process
 
     start_time = time.time()
@@ -395,6 +578,10 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
         preds = output.argmax(dim=1)
         for i in range(batch_size):
             confusion_counts[target[i].item()][preds[i].item()] += 1
+
+        if copper_sweep:
+            sweep_logits.append(output.detach().float().cpu())
+            sweep_targets.append(target.detach().long().cpu())
 
         if save_predictions:
             probs = torch.softmax(output, dim=1)
@@ -467,6 +654,33 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
             for pred_idx, count in inner.items():
                 confusion[true_idx, pred_idx] = count
 
+    if copper_sweep:
+        local_sweep = {
+            "logits": torch.cat(sweep_logits, dim=0) if sweep_logits else torch.empty((0, num_classes or 0)),
+            "targets": torch.cat(sweep_targets, dim=0) if sweep_targets else torch.empty((0,), dtype=torch.long),
+        }
+        if num_tasks > 1 and torch.distributed.is_initialized():
+            gathered_sweep = [None] * num_tasks
+            torch.distributed.gather_object(
+                local_sweep, gathered_sweep if global_rank == 0 else None, dst=0
+            )
+            if global_rank == 0:
+                sweep_logits_all = torch.cat(
+                    [part["logits"] for part in gathered_sweep if part is not None], dim=0
+                )
+                sweep_targets_all = torch.cat(
+                    [part["targets"] for part in gathered_sweep if part is not None], dim=0
+                )
+            else:
+                sweep_logits_all = torch.empty((0, num_classes or 0))
+                sweep_targets_all = torch.empty((0,), dtype=torch.long)
+        else:
+            sweep_logits_all = local_sweep["logits"]
+            sweep_targets_all = local_sweep["targets"]
+    else:
+        sweep_logits_all = torch.empty((0, num_classes or 0))
+        sweep_targets_all = torch.empty((0,), dtype=torch.long)
+
     if save_predictions and per_sample and num_tasks > 1 and torch.distributed.is_initialized():
         gathered = [None] * num_tasks
         torch.distributed.gather_object(
@@ -535,6 +749,21 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
             _print_confusion_summary(confusion, class_names)
         if save_predictions and per_sample and output_dir:
             _write_predictions(per_sample, class_names, output_dir)
+        if copper_sweep and output_dir:
+            _write_copper_operating_point_sweep(
+                sweep_logits_all,
+                sweep_targets_all,
+                class_names,
+                output_dir,
+                bias_min=copper_bias_min,
+                bias_max=copper_bias_max,
+                bias_steps=copper_bias_steps,
+                threshold_min=copper_threshold_min,
+                threshold_max=copper_threshold_max,
+                threshold_steps=copper_threshold_steps,
+                min_precision=copper_sweep_min_precision,
+                max_acc_drop=copper_sweep_max_acc_drop,
+            )
 
     eval_stats = {k: meter.global_avg for k, meter in metric_logger.meters.items()}
     eval_stats.update(report_stats)
