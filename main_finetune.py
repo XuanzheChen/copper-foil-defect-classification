@@ -455,13 +455,23 @@ def main(args):
             global_rank=global_rank,
         )
         with open(os.path.join(args.output_dir, "eval-class-acc.txt"), "w", encoding="utf-8") as f:
+                f.write(f"Overall Acc@1: {val_stats['acc1']:.5f}%\n")
+                f.write(f"Macro Recall: {val_stats['macro_recall']:.5f}%\n")
+                f.write(f"铜瘤 Recall: {val_stats['copper_recall']:.5f}%\n")
+                f.write(f"铜瘤 Precision: {val_stats['copper_precision']:.5f}%\n\n")
                 for cls, stats in acc_info.items():
                     num_samples = stats["total"]
                     acc = stats["accuracy"]
                     class_name = class_list[cls]
                     f.write(f"With {num_samples} samples, Class {class_name}: {acc:.2f}%\n")
                 f.write("\n")
-        print(f"Accuracy of the network on {len(dataset_val)} evaluated images: {val_stats['acc1']:.5f}%")
+        print(
+            f"Evaluation summary on {len(dataset_val)} images — "
+            f"Overall Acc@1: {val_stats['acc1']:.5f}% | "
+            f"Macro Recall: {val_stats['macro_recall']:.5f}% | "
+            f"铜瘤 Recall: {val_stats['copper_recall']:.5f}% | "
+            f"铜瘤 Precision: {val_stats['copper_precision']:.5f}%"
+        )
         return
     
     max_accuracy = 0.0
@@ -490,9 +500,25 @@ def main(args):
                     args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                     loss_scaler=loss_scaler, epoch=epoch, model_ema=model_ema)
         if data_loader_val is not None:
-            val_stats, acc_info = evaluate(data_loader_val, model, device, use_amp=args.use_amp)
-            print(f"Accuracy of the model on the {len(dataset_val)} val images: {val_stats['acc1']:.1f}%")
+            val_stats, acc_info = evaluate(
+                data_loader_val, model, device, use_amp=args.use_amp,
+                class_names=class_list, num_classes=args.nb_classes,
+                num_tasks=num_tasks, global_rank=global_rank,
+            )
+            print(
+                f"Validation summary on {len(dataset_val)} images — "
+                f"Overall Acc@1: {val_stats['acc1']:.5f}% | "
+                f"Macro Recall: {val_stats['macro_recall']:.5f}% | "
+                f"铜瘤 Recall: {val_stats['copper_recall']:.5f}% | "
+                f"铜瘤 Precision: {val_stats['copper_precision']:.5f}%"
+            )
             with open(os.path.join(args.output_dir, "val-class-acc.txt"), "a", encoding="utf-8") as f:
+                f.write(
+                    f"Overall Acc@1: {val_stats['acc1']:.5f}% | "
+                    f"Macro Recall: {val_stats['macro_recall']:.5f}% | "
+                    f"铜瘤 Recall: {val_stats['copper_recall']:.5f}% | "
+                    f"铜瘤 Precision: {val_stats['copper_precision']:.5f}%\n"
+                )
                 for cls, stats in acc_info.items():
                     num_samples = stats["total"]
                     acc = stats["accuracy"]
@@ -511,6 +537,9 @@ def main(args):
                 log_writer.update(val_acc1=val_stats['acc1'], head="perf", step=epoch)
                 log_writer.update(val_acc5=val_stats['acc5'], head="perf", step=epoch)
                 log_writer.update(val_loss=val_stats['loss'], head="perf", step=epoch)
+                log_writer.update(val_macro_recall=val_stats['macro_recall'], head="perf", step=epoch)
+                log_writer.update(val_copper_recall=val_stats['copper_recall'], head="perf", step=epoch)
+                log_writer.update(val_copper_precision=val_stats['copper_precision'], head="perf", step=epoch)
 
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                          **{f'val_{k}': v for k, v in val_stats.items()},
@@ -520,7 +549,11 @@ def main(args):
             
             # repeat testing routines for EMA, if ema eval is turned on
             if args.model_ema and args.model_ema_eval:
-                val_stats_ema, _ = evaluate(data_loader_val, model_ema.ema, device, use_amp=args.use_amp)
+                val_stats_ema, _ = evaluate(
+                    data_loader_val, model_ema.ema, device, use_amp=args.use_amp,
+                    class_names=class_list, num_classes=args.nb_classes,
+                    num_tasks=num_tasks, global_rank=global_rank,
+                )
                 print(f"Accuracy of the model EMA on {len(dataset_val)} val images: {val_stats_ema['acc1']:.1f}%")
                 if max_accuracy_ema < val_stats_ema["acc1"]:
                     max_accuracy_ema = val_stats_ema["acc1"]
