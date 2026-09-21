@@ -548,6 +548,7 @@ def main(args):
             f"loss weight={args.copper_loss_weight:.4f}"
         )
 
+    criterion = criterion.to(device)
     print("criterion = %s" % str(criterion))
 
     utils.auto_load_model(
