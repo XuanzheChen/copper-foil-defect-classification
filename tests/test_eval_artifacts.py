@@ -23,7 +23,7 @@ from PIL import Image
 from torchvision import transforms
 
 from datasets import CopperFoilImageFolder, build_transform
-from engine_finetune import evaluate
+from engine_finetune import _classification_report_from_confusion, evaluate
 
 
 class _FakeLinearModel(torch.nn.Module):
@@ -179,6 +179,25 @@ class EvalArtifactTests(unittest.TestCase):
         self.assertEqual(len(rows), len(dataset))
         # Reconstructed global index is exactly the dataset position.
         self.assertEqual([int(r["index"]) for r in rows], list(range(len(dataset))))
+
+    def test_summary_metrics_include_macro_and_copper_precision_recall(self):
+        confusion = torch.tensor(
+            [
+                [8, 2, 0, 0, 0],
+                [0, 10, 0, 0, 0],
+                [0, 0, 5, 0, 0],
+                [0, 0, 0, 4, 1],
+                [0, 2, 0, 0, 8],
+            ],
+            dtype=torch.long,
+        )
+        report = _classification_report_from_confusion(
+            confusion,
+            ["class_a", "class_b", "class_c", "class_d", "铜瘤"],
+        )
+        self.assertAlmostEqual(report["macro_recall"], 88.0, places=6)
+        self.assertAlmostEqual(report["copper_recall"], 80.0, places=6)
+        self.assertAlmostEqual(report["copper_precision"], 8 / 9 * 100.0, places=6)
 
     def test_artifacts_are_skipped_when_flags_are_off(self):
         model = _FakeLinearModel(num_classes=5)
