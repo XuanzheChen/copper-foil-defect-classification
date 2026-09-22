@@ -1,0 +1,1 @@
+/home/cxz/.local/bin/micromamba run -n copper-foil-defect-classification bash scripts/run-hard-example-grid-eval.sh /home/cxz/projects/copper-foil-defect-classification/experiments/20260922T073011Z-hard-example-oversampling-grid-200ep 1 2 4 
