@@ -10,6 +10,7 @@ the training environment rather than against a bare interpreter.
 """
 
 import csv
+import math
 import sys
 import tempfile
 import unittest
@@ -122,6 +123,34 @@ class EvalArtifactTests(unittest.TestCase):
         for row in prediction_rows:
             self.assertTrue(Path(row["path"]).is_file(), msg=row["path"])
             self.assertIn(row["true_label"], set(CLASSES))
+
+    def test_copper_logit_margin_matches_probability_odds(self):
+        model = _FakeLinearModel(num_classes=5)
+        evaluate(
+            self.loader,
+            model,
+            "cpu",
+            output_dir=str(self.tmp),
+            save_predictions=True,
+            save_confusion=False,
+            class_names=["class_a", "class_b", "class_c", "class_d", "铜瘤"],
+            num_classes=5,
+        )
+
+        with (self.tmp / "eval_predictions.csv").open(
+            newline="", encoding="utf-8"
+        ) as handle:
+            rows = list(csv.DictReader(handle))
+
+        for row in rows:
+            copper_prob = float(row["copper_prob"])
+            rival_prob = float(row["copper_rival_prob"])
+            logit_margin = float(row["copper_logit_margin"])
+            self.assertGreater(copper_prob, 0.0)
+            self.assertGreater(rival_prob, 0.0)
+            self.assertNotEqual(row["copper_rival_label"], "铜瘤")
+            expected = math.log(copper_prob / rival_prob)
+            self.assertAlmostEqual(logit_margin, expected, places=5)
 
     def test_margin_invariant_and_misclassified_subset(self):
         self._run_eval()
