@@ -3,6 +3,10 @@
 
 import argparse
 import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from hard_example_sampling import build_hard_example_manifest
 
