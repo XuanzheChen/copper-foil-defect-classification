@@ -1,0 +1,4 @@
+weight	run_dir	exit_code
+1.25	/home/cxz/projects/copper-foil-defect-classification/experiments/20260921T131827Z-copper-loss-weighted-rerun/weight-1p25	0
+1.5	/home/cxz/projects/copper-foil-defect-classification/experiments/20260921T131827Z-copper-loss-weighted-rerun/weight-1p5	0
+2.0	/home/cxz/projects/copper-foil-defect-classification/experiments/20260921T131827Z-copper-loss-weighted-rerun/weight-2p0	0

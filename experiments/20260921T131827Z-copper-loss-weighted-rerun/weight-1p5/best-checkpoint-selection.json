@@ -1,0 +1,20 @@
+{
+  "epoch": 37,
+  "selection_policy": {
+    "acc_tolerance_pp": 0.1,
+    "eligibility": "acc1 >= max_acc_seen - acc_tolerance_pp",
+    "tie_break_order": [
+      "copper_recall",
+      "copper_precision",
+      "macro_recall",
+      "acc1"
+    ]
+  },
+  "max_acc_seen": 98.33068362480127,
+  "selected_metrics": {
+    "acc1": 98.33068362480127,
+    "macro_recall": 98.2094508301405,
+    "copper_recall": 97.33333333333333,
+    "copper_precision": 95.42483660130719
+  }
+}
