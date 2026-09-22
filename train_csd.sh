@@ -15,6 +15,8 @@ UPDATE_FREQ="${UPDATE_FREQ:-4}"
 EPOCHS="${EPOCHS:-200}"
 BEST_ACC_TOLERANCE="${BEST_ACC_TOLERANCE:-0.10}"
 COPPER_LOSS_WEIGHT="${COPPER_LOSS_WEIGHT:-1.0}"
+HARD_EXAMPLE_MANIFEST="${HARD_EXAMPLE_MANIFEST:-}"
+HARD_EXAMPLE_FACTOR="${HARD_EXAMPLE_FACTOR:-1.0}"
 
 # --input_size must stay 200. datasets.py raises on any other value, because the
 # formal copper-foil pipeline forbids resize and keeps the native 200x200 scale.
@@ -44,6 +46,8 @@ python main_finetune.py \
   --epochs "$EPOCHS" \
   --best_acc_tolerance "$BEST_ACC_TOLERANCE" \
   --copper_loss_weight "$COPPER_LOSS_WEIGHT" \
+  --hard_example_manifest "$HARD_EXAMPLE_MANIFEST" \
+  --hard_example_factor "$HARD_EXAMPLE_FACTOR" \
   --input_size 200 \
   --nb_classes 9 \
   --warmup_epochs 30 \
