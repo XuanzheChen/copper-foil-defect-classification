@@ -645,7 +645,7 @@ def main(args):
     print("Start training for %d epochs" % args.epochs)
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
+        if args.distributed or isinstance(data_loader_train.sampler, WeightedDistributedSampler):
             data_loader_train.sampler.set_epoch(epoch)
         if log_writer is not None:
             log_writer.set_step(epoch * num_training_steps_per_epoch * args.update_freq)
