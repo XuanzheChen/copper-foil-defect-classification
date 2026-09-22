@@ -4,7 +4,6 @@ import csv
 import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
 
 import torch
 
@@ -13,6 +12,15 @@ from hard_example_sampling import (
     build_hard_example_manifest,
     build_hard_example_weights,
 )
+
+
+class _FakeDataset:
+    def __init__(self, root, samples):
+        self.root = str(root)
+        self.samples = samples
+
+    def __len__(self):
+        return len(self.samples)
 
 
 class HardExampleSamplingTests(unittest.TestCase):
@@ -38,11 +46,7 @@ class HardExampleSamplingTests(unittest.TestCase):
             target = {"异物": 0, "铜瘤": 1, "其他": 2}[cls]
             self.samples.append((str(path), target))
 
-        self.dataset = SimpleNamespace(
-            root=str(self.root),
-            samples=self.samples,
-            __len__=lambda self_: len(self.samples),
-        )
+        self.dataset = _FakeDataset(self.root, self.samples)
 
     def _write_predictions(self):
         path = self.tmp / "predictions.csv"
