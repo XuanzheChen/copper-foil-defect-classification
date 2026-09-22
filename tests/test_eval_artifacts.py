@@ -115,7 +115,8 @@ class EvalArtifactTests(unittest.TestCase):
         self.assertEqual(len(prediction_rows), len(self.dataset))
         expected_columns = {
             "index", "path", "true_label", "pred_label", "true_prob",
-            "pred_prob", "margin", "correct", "top5",
+            "pred_prob", "margin", "copper_prob", "copper_logit_margin",
+            "copper_rival_label", "copper_rival_prob", "correct", "top5",
         }
         self.assertEqual(set(prediction_rows[0].keys()), expected_columns)
         for row in prediction_rows:
