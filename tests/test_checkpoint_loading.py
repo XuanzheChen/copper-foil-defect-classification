@@ -10,6 +10,11 @@ instead of stopping it:
 2. ``auto_load_model`` reads with torch's default ``weights_only=True``, which
    refuses to unpickle the ``args`` and ``optimizer`` entries that
    ``save_model`` writes into every checkpoint.
+3. ``save_model`` prunes exactly one periodic checkpoint per save, the one
+   ``save_ckpt_num * save_ckpt_freq`` epochs back. With the argparse default of
+   3 every run keeps three ~320 MB files that nothing reads back, so
+   ``train_csd.sh`` pins ``--save_ckpt_num 1``; that retention rule is covered
+   below because an off-by-one here silently keeps or drops the wrong epoch.
 
 Requires timm and tensorboardX, so these run in the training environment rather
 than against a bare interpreter.
@@ -155,6 +160,44 @@ class ResumeCheckpointTests(unittest.TestCase):
         self.assertEqual(stored.model, "convnextv2_tiny")
         self.assertEqual(stored.input_size, 200)
         self.assertEqual(stored.nb_classes, 9)
+
+    def test_save_ckpt_num_one_keeps_only_the_newest_periodic_checkpoint(self):
+        args = self._args(self.output_dir, save_ckpt_num=1)
+        model = convnextv2_tiny(num_classes=9)
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+
+        for epoch in range(3):
+            utils.save_model(
+                args=args,
+                epoch=epoch,
+                model=model,
+                model_without_ddp=model,
+                optimizer=optimizer,
+                loss_scaler=utils.NativeScalerWithGradNormCount(),
+            )
+
+        remaining = sorted(path.name for path in self.output_dir.glob("checkpoint-*.pth"))
+        self.assertEqual(remaining, ["checkpoint-2.pth"])
+
+    def test_save_ckpt_num_three_keeps_the_three_newest_periodic_checkpoints(self):
+        # The argparse default this project moved away from, pinned here so the
+        # retention arithmetic above cannot drift unnoticed.
+        args = self._args(self.output_dir, save_ckpt_num=3)
+        model = convnextv2_tiny(num_classes=9)
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+
+        for epoch in range(5):
+            utils.save_model(
+                args=args,
+                epoch=epoch,
+                model=model,
+                model_without_ddp=model,
+                optimizer=optimizer,
+                loss_scaler=utils.NativeScalerWithGradNormCount(),
+            )
+
+        remaining = sorted(path.name for path in self.output_dir.glob("checkpoint-*.pth"))
+        self.assertEqual(remaining, ["checkpoint-2.pth", "checkpoint-3.pth", "checkpoint-4.pth"])
 
 
 if __name__ == "__main__":

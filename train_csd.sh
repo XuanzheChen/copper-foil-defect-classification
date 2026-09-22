@@ -14,6 +14,12 @@ BATCH_SIZE="${BATCH_SIZE:-32}"
 UPDATE_FREQ="${UPDATE_FREQ:-4}"
 EPOCHS="${EPOCHS:-200}"
 BEST_ACC_TOLERANCE="${BEST_ACC_TOLERANCE:-0.10}"
+# After each save utils.save_model deletes exactly checkpoint-(epoch -
+# save_ckpt_num * save_ckpt_freq) and nothing else, so 1 keeps only the newest
+# periodic checkpoint beside checkpoint-best.pth. The argparse default of 3
+# leaves three ~320 MB files per run, and auto_load_model only ever resumes the
+# newest one. Raise this only if an older epoch must stay resumable.
+SAVE_CKPT_NUM="${SAVE_CKPT_NUM:-1}"
 COPPER_LOSS_WEIGHT="${COPPER_LOSS_WEIGHT:-1.0}"
 HARD_EXAMPLE_MANIFEST="${HARD_EXAMPLE_MANIFEST:-}"
 HARD_EXAMPLE_FACTOR="${HARD_EXAMPLE_FACTOR:-1.0}"
@@ -45,6 +51,7 @@ python main_finetune.py \
   --blr 3.2e-3 \
   --epochs "$EPOCHS" \
   --best_acc_tolerance "$BEST_ACC_TOLERANCE" \
+  --save_ckpt_num "$SAVE_CKPT_NUM" \
   --copper_loss_weight "$COPPER_LOSS_WEIGHT" \
   --hard_example_manifest "$HARD_EXAMPLE_MANIFEST" \
   --hard_example_factor "$HARD_EXAMPLE_FACTOR" \
