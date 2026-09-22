@@ -398,6 +398,10 @@ def _write_predictions(per_sample, class_names, output_dir):
         "true_prob",
         "pred_prob",
         "margin",
+        "copper_prob",
+        "copper_logit_margin",
+        "copper_rival_label",
+        "copper_rival_prob",
         "correct",
         "top5",
     ]
@@ -406,6 +410,9 @@ def _write_predictions(per_sample, class_names, output_dir):
             **record,
             "true_label": _class_name(class_names, record["true_label"]),
             "pred_label": _class_name(class_names, record["pred_label"]),
+            "copper_rival_label": _class_name(
+                class_names, record["copper_rival_label"]
+            ) if record["copper_rival_label"] >= 0 else "",
         }
         for record in per_sample
     ]
@@ -541,6 +548,11 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
     per_sample = []
     sweep_logits = []
     sweep_targets = []
+    copper_idx = None
+    if class_names is not None:
+        display_labels = [str(name) for name in class_names]
+        if "铜瘤" in display_labels:
+            copper_idx = display_labels.index("铜瘤")
     sample_cursor = 0  # flat position across batches on this process
 
     start_time = time.time()
@@ -590,6 +602,30 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
             )
             pred_prob = topk_scores[:, 0]
             true_prob = probs[torch.arange(batch_size, device=probs.device), target]
+
+            if copper_idx is not None:
+                copper_prob = probs[:, copper_idx]
+                non_copper_logits = output.clone()
+                non_copper_logits[:, copper_idx] = float("-inf")
+                copper_rival_logits, copper_rival_idx = non_copper_logits.max(dim=1)
+                copper_logit_margin = output[:, copper_idx] - copper_rival_logits
+                copper_rival_prob = probs[
+                    torch.arange(batch_size, device=probs.device), copper_rival_idx
+                ]
+            else:
+                copper_prob = torch.full(
+                    (batch_size,), float("nan"), device=probs.device
+                )
+                copper_logit_margin = torch.full(
+                    (batch_size,), float("nan"), device=probs.device
+                )
+                copper_rival_idx = torch.full(
+                    (batch_size,), -1, dtype=torch.long, device=probs.device
+                )
+                copper_rival_prob = torch.full(
+                    (batch_size,), float("nan"), device=probs.device
+                )
+
             # Margin = how far the true class sat behind (or ahead of) the
             # predicted class: < 0 when misclassified, ~0 when correct.
             margin = true_prob - pred_prob
@@ -619,6 +655,10 @@ def evaluate(data_loader, model, device, use_amp=False, output_dir=None,
                         "true_prob": float(true_prob[i].item()),
                         "pred_prob": float(pred_prob[i].item()),
                         "margin": float(margin[i].item()),
+                        "copper_prob": float(copper_prob[i].item()),
+                        "copper_logit_margin": float(copper_logit_margin[i].item()),
+                        "copper_rival_label": int(copper_rival_idx[i].item()),
+                        "copper_rival_prob": float(copper_rival_prob[i].item()),
                         "correct": int((preds[i] == target[i]).item()),
                         "top5": top5,
                     }
