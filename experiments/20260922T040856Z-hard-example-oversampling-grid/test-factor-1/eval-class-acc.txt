@@ -1,0 +1,15 @@
+Overall Acc@1: 98.60253%
+Macro Recall: 98.05857%
+铜瘤 Recall: 95.66787%
+铜瘤 Precision: 98.14815%
+
+With 494 samples, Class 凹凸点: 99.39%
+With 492 samples, Class 刮伤: 100.00%
+With 605 samples, Class 异物: 99.50%
+With 233 samples, Class 气泡: 97.85%
+With 60 samples, Class 结晶: 98.33%
+With 169 samples, Class 针孔: 97.04%
+With 277 samples, Class 铜瘤: 95.67%
+With 525 samples, Class 陨石坑: 99.24%
+With 222 samples, Class 黑点: 95.50%
+
