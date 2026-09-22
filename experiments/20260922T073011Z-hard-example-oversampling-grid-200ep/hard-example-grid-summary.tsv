@@ -1,0 +1,4 @@
+factor	run_dir	exit_code
+1	/home/cxz/projects/copper-foil-defect-classification/experiments/20260922T073011Z-hard-example-oversampling-grid-200ep/factor-1	0
+2	/home/cxz/projects/copper-foil-defect-classification/experiments/20260922T073011Z-hard-example-oversampling-grid-200ep/factor-2	0
+4	/home/cxz/projects/copper-foil-defect-classification/experiments/20260922T073011Z-hard-example-oversampling-grid-200ep/factor-4	0
