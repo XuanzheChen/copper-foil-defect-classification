@@ -30,6 +30,10 @@ from losses import (
     ClassWeightedLabelSmoothingCrossEntropy,
     ClassWeightedSoftTargetCrossEntropy,
 )
+from hard_example_sampling import (
+    WeightedDistributedSampler,
+    build_hard_example_weights,
+)
 
 import utils
 from utils import NativeScalerWithGradNormCount as NativeScaler
@@ -198,6 +202,11 @@ def get_args_parser():
     parser.add_argument('--best_acc_tolerance', type=float, default=0.10,
                         help='Checkpoint selection Acc@1 tolerance band in percentage points. '
                              'Within the band from the best Acc@1 seen so far, prefer higher 铜瘤 Recall.')
+    parser.add_argument('--hard_example_manifest', default='', type=str,
+                        help='Train-set hard-example manifest generated from model-score mining.')
+    parser.add_argument('--hard_example_factor', default=1.0, type=float,
+                        help='Sampling weight multiplier for manifest-selected hard examples. '
+                             '1.0 preserves the original training sampler.')
 
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int,
@@ -346,6 +355,10 @@ def main(args):
         raise ValueError(
             f"--copper_loss_weight must be > 0, got {args.copper_loss_weight}"
         )
+    if args.hard_example_factor < 1.0:
+        raise ValueError(
+            f"--hard_example_factor must be >= 1.0, got {args.hard_example_factor}"
+        )
     if not args.eval and args.copper_loss_weight != 1.0 and "铜瘤" not in class_list:
         raise ValueError(
             "--copper_loss_weight != 1.0 requires a 铜瘤 entry in class_labels"
@@ -363,9 +376,36 @@ def main(args):
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
-    sampler_train = torch.utils.data.DistributedSampler(
-        dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True, seed=args.seed,
-    )
+    hard_sampling_info = {
+        "factor": float(args.hard_example_factor),
+        "selected": 0,
+        "selected_by_kind": {},
+        "manifest": args.hard_example_manifest,
+    }
+    if args.hard_example_factor > 1.0:
+        sample_weights, hard_sampling_info = build_hard_example_weights(
+            dataset_train,
+            args.hard_example_manifest,
+            args.hard_example_factor,
+        )
+        sampler_train = WeightedDistributedSampler(
+            sample_weights,
+            num_replicas=num_tasks,
+            rank=global_rank,
+            seed=args.seed,
+            replacement=True,
+        )
+        print(
+            "Hard-example sampling enabled: factor={factor:.3f}, selected={selected}, "
+            "by_kind={selected_by_kind}, manifest={manifest}".format(
+                **hard_sampling_info
+            )
+        )
+    else:
+        sampler_train = torch.utils.data.DistributedSampler(
+            dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True, seed=args.seed,
+        )
+        print("Hard-example sampling disabled; using original DistributedSampler.")
     print("Sampler_train = %s" % str(sampler_train))
     if args.dist_eval:
         if len(dataset_val) % num_tasks != 0:
@@ -691,6 +731,8 @@ def main(args):
                          **{f'val_{k}': v for k, v in val_stats.items()},
                          'epoch': epoch,
                          'copper_loss_weight': args.copper_loss_weight,
+                         'hard_example_factor': args.hard_example_factor,
+                         'hard_example_selected': hard_sampling_info["selected"],
                          'n_parameters': n_parameters,
                          'trainable_parameters': trainable_parameters}
             
@@ -737,6 +779,8 @@ def main(args):
             log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                         'epoch': epoch,
                         'copper_loss_weight': args.copper_loss_weight,
+                        'hard_example_factor': args.hard_example_factor,
+                        'hard_example_selected': hard_sampling_info["selected"],
                         'n_parameters': n_parameters,
                          'trainable_parameters': trainable_parameters}
         
