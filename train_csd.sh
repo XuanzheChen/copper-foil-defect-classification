@@ -56,7 +56,7 @@ python main_finetune.py \
   --hard_example_manifest "$HARD_EXAMPLE_MANIFEST" \
   --hard_example_factor "$HARD_EXAMPLE_FACTOR" \
   --input_size 200 \
-  --nb_classes 9 \
+  --nb_classes "${NB_CLASSES:-9}" \
   --warmup_epochs 30 \
   --layer_decay_type single \
   --layer_decay 0.9 \
