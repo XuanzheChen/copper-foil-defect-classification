@@ -1,0 +1,5 @@
+dataset=/share/data/cxz/copper-foil-defect-classification/1017-formal-split-9classes
+split_seed=42
+training_seed=0
+epochs=200
+model=convnextv2_tiny
