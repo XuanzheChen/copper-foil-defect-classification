@@ -1,7 +1,0 @@
-/home/cxz/projects/copper-foil-defect-classification/utils.py:413: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
-  self._scaler = torch.cuda.amp.GradScaler()
-/home/cxz/projects/copper-foil-defect-classification/engine_finetune.py:53: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
-  with torch.cuda.amp.autocast():
-/home/cxz/projects/copper-foil-defect-classification/engine_finetune.py:569: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
-  with torch.cuda.amp.autocast():
-Terminated                 python main_finetune.py --model "$MODEL" --batch_size "$BATCH_SIZE" --update_freq "$UPDATE_FREQ" --blr 3.2e-3 --epochs "$EPOCHS" --best_acc_tolerance "$BEST_ACC_TOLERANCE" --save_ckpt_num "$SAVE_CKPT_NUM" --copper_loss_weight "$COPPER_LOSS_WEIGHT" --hard_example_manifest "$HARD_EXAMPLE_MANIFEST" --hard_example_factor "$HARD_EXAMPLE_FACTOR" --input_size 200 --nb_classes "${NB_CLASSES:-9}" --warmup_epochs 30 --layer_decay_type single --layer_decay 0.9 --weight_decay 0.05 --drop_path 0.2 --mixup 0.8 --cutmix 1.0 --smoothing 0.1 --use_amp true --HSVEnhance true --add_Gauss_Noise false --finetune "$PRETRAINED_WEIGHT" --data_path "$DATA_PATH" --output_dir "$OUTPUT_DIR" --use_grayscale false "$CLASS_LABELS"
