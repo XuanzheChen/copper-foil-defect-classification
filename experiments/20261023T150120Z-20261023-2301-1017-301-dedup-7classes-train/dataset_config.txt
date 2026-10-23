@@ -1,0 +1,23 @@
+{
+  "DATA_PATH": "/share/data/cxz/1017-copper-foil-defect-classification-2/1017-301-plus-formal-split-7classes",
+  "CLASS_LABELS": "/share/data/cxz/1017-copper-foil-defect-classification-2/1017-301-plus-formal-split-7classes/class_labels.txt",
+  "NB_CLASSES": "7",
+  "MODEL": "convnextv2_tiny",
+  "EPOCHS": "200",
+  "BATCH_SIZE": "32",
+  "UPDATE_FREQ": "4",
+  "PRETRAINED_WEIGHT": "/home/cxz/projects/copper-foil-defect-classification/pretrained-weights/convnextv2_tiny_1k_224_ema.pt",
+  "CUDA_VISIBLE_DEVICES": "0",
+  "OMP_NUM_THREADS": "8",
+  "MKL_NUM_THREADS": "8",
+  "split_seed": 42,
+  "training_seed": 0,
+  "original_images": 7519,
+  "admitted_train": 4236,
+  "admitted_val": 910,
+  "admitted_test": 2214,
+  "removed_duplicate_images": 770,
+  "content_duplicate_groups": 0,
+  "cross_split_duplicate_groups": 0,
+  "fresh_finetune": true
+}

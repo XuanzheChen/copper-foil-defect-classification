@@ -1,0 +1,1800 @@
+Overall Acc@1: 68.02198% | Macro Recall: 62.23903% | 铜瘤 Recall: 46.00000% | 铜瘤 Precision: 97.18310%
+With 150 samples, Class 凹凸: 97.33%
+With 150 samples, Class 刮伤: 94.00%
+With 119 samples, Class 压坑: 94.12%
+With 144 samples, Class 异物: 88.89%
+With 47 samples, Class 拖尾: 0.00%
+With 150 samples, Class 铜瘤: 46.00%
+With 150 samples, Class 黑点: 15.33%
+
+Overall Acc@1: 94.28571% | Macro Recall: 90.81680% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 91.97531%
+With 150 samples, Class 凹凸: 97.33%
+With 150 samples, Class 刮伤: 93.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 94.44%
+With 47 samples, Class 拖尾: 57.45%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 94.67%
+
+Overall Acc@1: 98.02198% | Macro Recall: 97.84845% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 96.75325%
+With 150 samples, Class 凹凸: 97.33%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.75000% | 铜瘤 Recall: 100.00000% | 铜瘤 Precision: 96.77419%
+With 150 samples, Class 凹凸: 97.33%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 100.00%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 98.24176% | Macro Recall: 98.24764% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 98.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.48770% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79822% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 100.00%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.37819% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 98.67%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 100.00%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.70298% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.35165% | Macro Recall: 98.52678% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00297% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 98.67%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.60378% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.35165% | Macro Recall: 97.90064% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 93.62%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.29662% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.72122% | 铜瘤 Recall: 96.66667% | 铜瘤 Precision: 99.31507%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 96.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.91430% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.24176% | Macro Recall: 98.01411% | 铜瘤 Recall: 97.33333% | 铜瘤 Precision: 99.31973%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 97.33%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.89979% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 97.38562%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.14%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.10217% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.02198% | Macro Recall: 98.22022% | 铜瘤 Recall: 94.00000% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 94.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 97.69231% | Macro Recall: 97.74267% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 93.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.96128% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 97.48%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.01090% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 97.80220% | Macro Recall: 98.04662% | 铜瘤 Recall: 94.00000% | 铜瘤 Precision: 99.29577%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 94.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.90537% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.46154% | Macro Recall: 98.58133% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 96.75325%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 93.75%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.45055% | Macro Recall: 99.51587% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.52938% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.80616% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.13187% | Macro Recall: 98.13949% | 铜瘤 Recall: 94.66667% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 94.67%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.78395% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 97.25275% | Macro Recall: 96.91451% | 铜瘤 Recall: 90.00000% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 97.48%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 93.62%
+With 150 samples, Class 铜瘤: 90.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.75000% | 铜瘤 Recall: 94.66667% | 铜瘤 Precision: 99.30070%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 94.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.35165% | Macro Recall: 98.31410% | 铜瘤 Recall: 97.33333% | 铜瘤 Precision: 98.64865%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 97.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.81646% | 铜瘤 Recall: 96.66667% | 铜瘤 Precision: 99.31507%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 96.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.80616% | 铜瘤 Recall: 97.33333% | 铜瘤 Precision: 99.31973%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 97.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 97.91209% | Macro Recall: 97.91627% | 铜瘤 Recall: 94.00000% | 铜瘤 Precision: 99.29577%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 94.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.91827% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.29662% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.39507% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.10302% | 铜瘤 Recall: 96.66667% | 铜瘤 Precision: 99.31507%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 93.62%
+With 150 samples, Class 铜瘤: 96.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.45055% | Macro Recall: 99.30716% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.90140% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.78532% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 98.32%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.71092% | 铜瘤 Recall: 96.66667% | 铜瘤 Precision: 99.31507%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 96.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00297% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.01090% | 铜瘤 Recall: 97.33333% | 铜瘤 Precision: 99.31973%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 97.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.60141% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.01748% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.01351% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.10217% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.39903% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.29662% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69108% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 97.38562%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.14%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.02198% | Macro Recall: 97.81967% | 铜瘤 Recall: 95.33333% | 铜瘤 Precision: 98.62069%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 95.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.98870% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79822% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69505% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.50457% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.81249% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00297% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69902% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.49427% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.57143% | Macro Recall: 98.29189% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.14%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.46154% | Macro Recall: 98.44605% | 铜瘤 Recall: 94.00000% | 铜瘤 Precision: 99.29577%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 94.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.50481% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 93.62%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.49427% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.01325%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79425% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89743% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.46154% | Macro Recall: 98.41727% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 98.68132% | Macro Recall: 98.61568% | 铜瘤 Recall: 97.33333% | 铜瘤 Precision: 98.64865%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 97.33%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09424% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.35165% | Macro Recall: 97.48718% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 89.36%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.68132% | Macro Recall: 97.78083% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 89.36%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69902% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.13187% | Macro Recall: 97.29670% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 89.36%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 96.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.29662% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79029% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09424% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89346% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19344% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.35165% | Macro Recall: 98.30616% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 94.44%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 97.33%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69902% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.91170% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.11011% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.01325%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89743% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.35165% | Macro Recall: 98.10141% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.14%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69902% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89346% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79822% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.35165% | Macro Recall: 98.31013% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 98.65772%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.14%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.49824% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.01325%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.01748% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00694% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.91827% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 100.00%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.10614% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00694% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 99.33%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.10217% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.46154% | Macro Recall: 98.62202% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 98.66667%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 96.00%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.90773% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79822% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69505% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 99.00297% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.80219% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 99.33%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89346% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69505% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79425% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.88949% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 97.38562%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.09187% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89743% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39582% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.09187% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89743% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.29662% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.79425% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 98.88713% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 95.74%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89743% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.09584% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39979% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.90140% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99664% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99664% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99664% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99664% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39582% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.90140% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 99.32432%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 98.79121% | Macro Recall: 98.69505% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.02632%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 95.83%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.08791% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 99.33%
+
+Overall Acc@1: 98.90110% | Macro Recall: 98.80219% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.00%
+
+Overall Acc@1: 99.12088% | Macro Recall: 98.99267% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 99.33333%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 98.89346% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 97.87%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.19741% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.22%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.01099% | Macro Recall: 99.09821% | 铜瘤 Recall: 99.33333% | 铜瘤 Precision: 98.67550%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 96.53%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 99.33%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20535% | 铜瘤 Recall: 98.00000% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.00%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39979% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39979% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.34066% | Macro Recall: 99.39979% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 100.00000%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 99.31%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.23077% | Macro Recall: 99.30059% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 98.61%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+
+Overall Acc@1: 99.12088% | Macro Recall: 99.20138% | 铜瘤 Recall: 98.66667% | 铜瘤 Precision: 99.32886%
+With 150 samples, Class 凹凸: 100.00%
+With 150 samples, Class 刮伤: 100.00%
+With 119 samples, Class 压坑: 99.16%
+With 144 samples, Class 异物: 97.92%
+With 47 samples, Class 拖尾: 100.00%
+With 150 samples, Class 铜瘤: 98.67%
+With 150 samples, Class 黑点: 98.67%
+

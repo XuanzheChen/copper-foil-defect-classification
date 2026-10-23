@@ -37,6 +37,15 @@ Thumbs.db
 .server.json
 downloaded-logs/
 
-# Experiment outputs: track logs and reports, but keep checkpoints out.
-# Checkpoint weights (*.pth/*.pt/*.ckpt) are already ignored above.
+# Experiment outputs are ignored unless they are traceable text artifacts.
+experiments/**
+!experiments/**/
+!experiments/**/*.log
+!experiments/**/*.txt
+!experiments/**/*.json
+!experiments/**/*.jsonl
+!experiments/**/*.csv
+!experiments/**/*.md
+!experiments/**/*.sh
+experiments/**/.server.json
 experiments/latest
