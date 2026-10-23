@@ -1,0 +1,1 @@
+{"pred_label": "凹凸", "top1_conf": 0.8358789682388306, "low_confidence": false, "topk": [], "index": 0, "path": "/share/data/cxz/1017-copper-foil-defect-classification-2/1017-301-plus-formal-split-7classes/test/凹凸/26091001017_18480.png", "true_label": null, "correct": null}

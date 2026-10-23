@@ -33,9 +33,9 @@ def main():
     args = parser.parse_args()
     root = args.run_dir
     reference = read_csv(root / "reference/eval_predictions.csv")
-    predictions = [json.loads(s) for s in (root / "topk/all_predictions.jsonl").read_text().splitlines()]
-    summary = json.loads((root / "topk/summary.json").read_text())
-    labels = [line.split(":", 1)[1] for line in (root / "class_labels.txt").read_text().splitlines()]
+    predictions = [json.loads(s) for s in (root / "topk/all_predictions.jsonl").read_text(encoding="utf-8").splitlines()]
+    summary = json.loads((root / "topk/summary.json").read_text(encoding="utf-8"))
+    labels = [line.split(":", 1)[1] for line in (root / "class_labels.txt").read_text(encoding="utf-8").splitlines()]
     ref = {r["path"]: r for r in reference}
     candidate = {r["path"]: r for r in predictions}
     assert len(ref) == len(candidate) == len(predictions) == 2214
@@ -53,7 +53,7 @@ def main():
     errors = sorted((r for r in predictions if not r["correct"]), key=lambda r: -r["top1_conf"])
     correct = [r for r in predictions if r["correct"]]
     low = [r for r in predictions if r["low_confidence"]]
-    low_saved = [json.loads(s) for s in (root / "topk/low_confidence_topk.jsonl").read_text().splitlines()]
+    low_saved = [json.loads(s) for s in (root / "topk/low_confidence_topk.jsonl").read_text(encoding="utf-8").splitlines()]
     assert low == low_saved
     assert len(low) == sum(float(r["pred_prob"]) < .7 for r in reference)
     for r in low:
@@ -82,7 +82,7 @@ def main():
                               correct=sum(inside(r["top1_conf"]) for r in correct)))
     error_values = [r["top1_conf"] for r in errors]
     correct_values = [r["top1_conf"] for r in correct]
-    log = (root / "reference/stdout.log").read_text()
+    log = (root / "reference/stdout.log").read_text(encoding="utf-8")
     fps = float(re.findall(r"Evaluation speed: ([\d.]+) images/s", log)[-1])
     result = dict(samples=len(predictions), excluded=22, correct=len(correct), errors=len(errors),
                   accuracy=len(correct)/len(predictions), top5_correct=top5_correct,
@@ -104,7 +104,7 @@ def main():
         writer.writeheader(); writer.writerows({k:r[k] for k in writer.fieldnames} for r in errors)
     lines = ["# 1017-301 去重七类模型测试与低置信度 Top-k", "",
              f"训练运行：`{args.training_run}`；训练成功完成200轮，使用epoch29选择的最佳权重。", "",
-             f"测试执行代码提交：`{(root/'git_commit.txt').read_text().strip()}`。",
+             f"测试执行代码提交：`{(root/'git_commit.txt').read_text(encoding='utf-8').strip()}`。",
              f"检查点SHA-256：`{summary['checkpoint_sha256']}`。", "",
              "固定独立test划分2236张，排除22张非200×200图像，实际评估2214张。训练/验证/测试内容SHA-256无重复。",
              "标准评估与最小部署依赖下的新脚本均使用batch64、workers10、CUDA AMP、seed0、原生200×200灰度流程。", "",

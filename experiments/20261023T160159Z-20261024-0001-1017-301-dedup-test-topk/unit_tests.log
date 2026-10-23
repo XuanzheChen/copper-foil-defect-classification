@@ -1,0 +1,13 @@
+test_all_classes_can_be_requested_and_logits_break_probability_ties (test_infer_topk.TopKContractTests) ... ok
+test_cli_rejects_invalid_arguments_before_opening_weights_or_output (test_infer_topk.TopKContractTests) ... ok
+test_confidence_rejects_nonfinite_and_out_of_range (test_infer_topk.TopKContractTests) ... ok
+test_integer_and_class_count_boundaries (test_infer_topk.TopKContractTests) ... ok
+test_invalid_probability_vectors_fail_closed (test_infer_topk.TopKContractTests) ... ok
+test_label_indices_and_duplicates_are_validated (test_infer_topk.TopKContractTests) ... ok
+test_metrics_distinguish_flagged_correct_predictions_from_caught_errors (test_infer_topk.TopKContractTests) ... ok
+test_threshold_is_strict_and_probabilities_are_not_rounded (test_infer_topk.TopKContractTests) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.154s
+
+OK

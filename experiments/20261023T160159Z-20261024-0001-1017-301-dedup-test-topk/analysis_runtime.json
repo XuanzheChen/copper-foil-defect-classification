@@ -1,0 +1,10 @@
+{
+  "analysis_location": "local Windows workspace",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:36:00) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.4.6",
+  "matplotlib": "3.11.0",
+  "script": "temp/analyze-dedup-test.py",
+  "script_sha256": "0c5addb6777fab75f1d590c70a6cf10d6ffcd3ccf2be928053603b148d9cd16a",
+  "inference_checkpoint_commit": "3a1d3cfb49d23885ce43f6eee82054d300255af1",
+  "analysis_inputs": "Original server text artifacts restored at identical experiments relative paths"
+}

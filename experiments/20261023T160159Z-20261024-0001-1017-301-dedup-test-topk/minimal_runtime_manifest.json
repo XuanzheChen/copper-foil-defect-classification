@@ -1,0 +1,10 @@
+{
+  "source": "/home/cxz/projects/copper-foil-defect-classification-minimum-backup",
+  "files": {
+    "datasets.py": "9655d47354ec8e3ea635c14654b835fb74911824e7e6672ffe5881886500dd3e",
+    "models/self/convnextv2_modified.py": "f30cbcad1a76fc1d7687f4ec1948084a7c3a320344d936cb918a1a06f39777b3",
+    "models/utils.py": "ba4d2c937f6f8d73f08458652635dc3d88204ad0d9de7ebe8dea0909b0475abc",
+    "infer_topk.py": "8af535aed986ec50e8ad5c7542accf35375cce71d951af532cd4e31da5b09a0e"
+  },
+  "training_entrypoint_present": false
+}

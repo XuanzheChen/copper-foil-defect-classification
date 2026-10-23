@@ -1,0 +1,1 @@
+8b8bce7c740320e5fe46ad82a2e4495a4760f6e6030fd9045123eafaf562b489  /home/cxz/projects/copper-foil-defect-classification/experiments/20261023T150120Z-20261023-2301-1017-301-dedup-7classes-train/checkpoint-best.pth
