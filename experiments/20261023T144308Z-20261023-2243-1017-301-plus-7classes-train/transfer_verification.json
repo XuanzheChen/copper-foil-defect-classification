@@ -1,0 +1,9 @@
+{
+  "verified_images": 8289,
+  "verified_source_and_split_images": 16578,
+  "unique_contents": 7519,
+  "cross_split_duplicate_groups": 0,
+  "metadata_archive_sha256": "1db1cacff90d4bf20d3dc84a50db03dce75ad2569da7f8aef7d03e9263639be9",
+  "split_manifest_sha256": "ca01414086933b36e20d3394dfac1819328835bccec25a9f55a4be8be77d21b5",
+  "sha256_manifest_sha256": "61e83562de9424d9da78dafc2307b587e00f5162f5784146ceb4aa24aaa1e556"
+}
