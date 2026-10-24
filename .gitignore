@@ -52,3 +52,6 @@ experiments/**/.server.json
 experiments/**/package/
 experiments/**/extracted/
 experiments/latest
+
+# Document deliveries are kept in the workspace docs directory outside Git.
+/docs/
