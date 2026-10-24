@@ -42,4 +42,10 @@ bash infer.sh --data /path/to/images --output /path/to/results
 | 非法参数 | `k=8`、`k=3.0`、`conf=1.1`、`conf=nan` 均退出码 2，未创建输出目录 |
 | 自动化测试 | 5 项部署构建测试和 8 项 Top-k 测试通过 |
 
-服务器完整运行产物保存在 `experiments/20261024T014207Z-20261024-0942-7classes-minimal-deployment-verify/`。本报告在本地编写，依据已读取的服务器终态记录；完整原始日志是否已回传和三端是否一致，以本次最终交付中的同步状态为准。
+本报告在本地编写，依据已读取的服务器终态记录。2026-10-24 按用户要求清理服务器端本次部署验证产物：删除 25 个顶层文件/目录，包括原始日志、测试输出、构建目录和解压副本，以及 `/tmp/20261024-minimal-deployment-text.tar.gz` 临时回传压缩包。验证目录内释放 670400375 字节，仅保留下列已验证的最小部署推理 ZIP：
+
+```text
+/home/cxz/projects/copper-foil-defect-classification/experiments/20261024T014207Z-20261024-0942-7classes-minimal-deployment-verify/copper-foil-7class-20261024.zip
+```
+
+删除前校验 ZIP 的 15 个文件、CRC、逐文件 SHA-256、七类标签和权重；删除后复核 ZIP 大小与上述哈希一致。原始验证日志未回传入库；本地交付文件和此验证结论保留。
