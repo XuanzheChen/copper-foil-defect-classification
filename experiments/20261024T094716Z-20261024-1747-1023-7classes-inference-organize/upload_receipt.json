@@ -1,0 +1,12 @@
+{
+  "verified": true,
+  "archive_sha256": "4b2168b0a96d46565e9f3dc55dde54301c6beb9d69ee7e5e5bda8dfa62dc415f",
+  "archive_bytes": 408035799,
+  "manifest_sha256": "f3fa8a7bd5671911d5772d86b501336a444612d07a8f25220e07ec6df6a319bb",
+  "files": 31458,
+  "images": 31455,
+  "admissible_images": 31317,
+  "excluded_non_200x200": 138,
+  "other_files": 3,
+  "all_file_hashes_verified": true
+}

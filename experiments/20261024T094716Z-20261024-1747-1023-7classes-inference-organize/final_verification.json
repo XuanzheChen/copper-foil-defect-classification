@@ -1,0 +1,26 @@
+{
+  "verified": true,
+  "classified_images": 31317,
+  "excluded_non_200x200": 138,
+  "non_image_files_preserved": 3,
+  "all_original_file_hashes_verified": true,
+  "all_organized_file_hashes_verified": true,
+  "all_top1_predictions_match_csv": true,
+  "all_low_confidence_top3_match_predictions": true,
+  "per_class": {
+    "凹凸": 94,
+    "刮伤": 436,
+    "压坑": 6595,
+    "异物": 242,
+    "拖尾": 210,
+    "铜瘤": 23691,
+    "黑点": 49
+  },
+  "low_confidence_samples": 6500,
+  "low_confidence_fraction": 0.20755500207555003,
+  "low_confidence_json_sha256": "1a06056fc307daac4ac9f98dc4168ed3f691491e0f253db53039b8ed340c8f95",
+  "original_wrapper_exit_code": 1,
+  "wrapper_error": "trailing_shell_here_document_terminator",
+  "prediction_and_organization_completed_before_wrapper_error": true,
+  "independent_verification_exit_code": 0
+}

@@ -1,0 +1,30 @@
+{
+  "verified": true,
+  "classified_images": 31317,
+  "excluded_non_200x200": 138,
+  "non_image_files_preserved": 3,
+  "per_class": {
+    "凹凸": 94,
+    "刮伤": 436,
+    "压坑": 6595,
+    "异物": 242,
+    "拖尾": 210,
+    "铜瘤": 23691,
+    "黑点": 49
+  },
+  "low_confidence_samples": 6500,
+  "low_confidence_per_class": {
+    "凹凸": 86,
+    "刮伤": 435,
+    "压坑": 2532,
+    "异物": 153,
+    "拖尾": 207,
+    "铜瘤": 3038,
+    "黑点": 49
+  },
+  "all_copied_image_hashes_verified": true,
+  "strict_conf": 0.7,
+  "k": 3,
+  "no_ground_truth_accuracy": true,
+  "low_confidence_json_sha256": "1a06056fc307daac4ac9f98dc4168ed3f691491e0f253db53039b8ed340c8f95"
+}
