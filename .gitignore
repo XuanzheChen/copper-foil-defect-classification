@@ -48,4 +48,7 @@ experiments/**
 !experiments/**/*.md
 !experiments/**/*.sh
 experiments/**/.server.json
+# Generated deployment binaries and source snapshots are release artifacts.
+experiments/**/package/
+experiments/**/extracted/
 experiments/latest

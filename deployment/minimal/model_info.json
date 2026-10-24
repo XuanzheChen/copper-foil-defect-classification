@@ -1,0 +1,14 @@
+{
+  "model": "convnextv2_tiny",
+  "num_classes": 7,
+  "input_size": 200,
+  "training_run": "20261023T150120Z-20261023-2301-1017-301-dedup-7classes-train",
+  "training_git_commit": "c01d81cd5ad003c11bbee97dd7a14fa2e9e7c1ef",
+  "best_epoch_zero_based": 29,
+  "checkpoint_sha256": "8b8bce7c740320e5fe46ad82a2e4495a4760f6e6030fd9045123eafaf562b489",
+  "class_labels_sha256": "5b18a8b194c3d417e97590ca2dd51c0da5e17853fb1e9be158b2a4e94bfa5670",
+  "reference_test_samples": 2214,
+  "reference_test_correct": 2198,
+  "reference_top1_accuracy": 0.992773261065944,
+  "reference_low_confidence_samples_k3_conf07": 61
+}
