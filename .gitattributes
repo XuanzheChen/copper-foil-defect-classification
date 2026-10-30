@@ -1,0 +1,3 @@
+# Preserve exact bytes for these archived experiment records.
+/experiments/20261030T113132Z-20261030-1931-1017-301-1030added-7classes-train/** -text
+/experiments/20261030T120646Z-20261030-added-7classes-test/** -text
