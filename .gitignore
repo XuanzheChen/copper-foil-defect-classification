@@ -47,6 +47,7 @@ experiments/**
 !experiments/**/*.csv
 !experiments/**/*.md
 !experiments/**/*.sh
+!experiments/**/run_config.env
 experiments/**/.server.json
 # Generated deployment binaries and source snapshots are release artifacts.
 experiments/**/package/
