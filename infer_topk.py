@@ -229,7 +229,10 @@ def run(args, labels):
             for index, probs, ranked in zip(indices.tolist(), probabilities, order):
                 path, truth = dataset.samples[index]
                 result = make_prediction(probs, labels, args.k, args.conf, ranked)
-                result.update(index=index, path=path, true_label=truth,
+                result.update(index=index, path=path,
+                              relative_path=(Path(path).resolve().relative_to(args.data.resolve()).as_posix()
+                                             if args.data.is_dir() else Path(path).name),
+                              true_label=truth,
                               correct=(truth == result["pred_label"]) if truth is not None else None)
                 records.append(result)
             if device.type == "cuda":

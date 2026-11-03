@@ -1,1 +1,0 @@
-/home/cxz/projects/copper-foil-defect-classification/experiments/20261017T061918Z-20261017-1419-1017-9classes-train/checkpoint-best.pth

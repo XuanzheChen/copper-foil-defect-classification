@@ -1,3 +1,0 @@
-relative_path,kind,true_label,pred_label,copper_logit_margin,copper_prob,copper_rival_label,copper_rival_prob
-铜瘤/26082660826-R02-U01_11769.png,hard_copper,铜瘤,异物,-2.689453125,0.05731201171875,异物,0.84375
-异物/8.17  8#_91323.png,hard_foreign_negative,异物,铜瘤,0.48046875,0.56591796875,异物,0.349853515625

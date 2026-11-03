@@ -1,58 +1,44 @@
-# Python
+# Python caches and local environments
 __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
-
-# Environments and editors
 .venv/
 venv/
 .idea/
 .vscode/
 
-# Data, weights and experiment outputs
-data/
-datasets/
-checkpoints/
-outputs/
-results/
-runs/
-logs/
-wrong_imgs/
+# Input data, learned weights, locally generated artifacts
+/data/
+/datasets/
+/weights/
+/pretrained-weights/
+/checkpoints/
+/outputs/
+/results/
+/runs/
+/logs/
+/wrong_imgs/
+/downloaded-logs/
+/experiments/
+/temp/
 *.pt
 *.pth
 *.ckpt
 *.onnx
 *.pkl
 
-# Local third-party checkout; AMP uses PyTorch native autocast
+# Private machine-specific server or credentials (never commit)
+.server.json
+.env
+.env.*
+!.env.example
+*.pem
+
+# Optional local dependencies
 apex/
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Local server connection settings and downloaded experiment logs
-.server.json
-downloaded-logs/
-
-# Experiment outputs are ignored unless they are traceable text artifacts.
-experiments/**
-!experiments/**/
-!experiments/**/*.log
-!experiments/**/*.txt
-!experiments/**/*.json
-!experiments/**/*.jsonl
-!experiments/**/*.csv
-!experiments/**/*.md
-!experiments/**/*.sh
-!experiments/**/run_config.env
-experiments/**/.server.json
-# Generated deployment binaries and source snapshots are release artifacts.
-experiments/**/package/
-experiments/**/extracted/
-experiments/latest
-
-# Document deliveries are kept in the workspace docs directory outside Git.
-/docs/

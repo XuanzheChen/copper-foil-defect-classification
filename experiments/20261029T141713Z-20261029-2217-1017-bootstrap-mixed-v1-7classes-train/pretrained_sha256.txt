@@ -1,1 +1,0 @@
-b23c89e2e601d2459bc35f8fef1bf6a3e9c90ab44b2f5b2d1117b984ac7f89a4  /home/cxz/projects/copper-foil-defect-classification/pretrained-weights/convnextv2_tiny_1k_224_ema.pt

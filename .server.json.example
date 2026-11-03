@@ -1,6 +1,0 @@
-{
-  "sshTarget": "user@training-server",
-  "repositoryPath": "/home/user/copper-foil-defect-classification",
-  "repositoryUrl": "git@github.com:XuanzheChen/copper-foil-defect-classification.git",
-  "branch": "main"
-}

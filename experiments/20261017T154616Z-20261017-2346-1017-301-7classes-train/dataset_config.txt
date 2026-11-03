@@ -1,9 +1,0 @@
-{
-  "DATA_PATH": "/share/data/cxz/1017-copper-foil-defect-classification-2/1017-301-formal-split-7classes",
-  "NB_CLASSES": "7",
-  "MODEL": "convnextv2_tiny",
-  "EPOCHS": "200",
-  "BATCH_SIZE": "32",
-  "UPDATE_FREQ": "4",
-  "PRETRAINED_WEIGHT": "/home/cxz/projects/copper-foil-defect-classification/pretrained-weights/convnextv2_tiny_1k_224_ema.pt"
-}

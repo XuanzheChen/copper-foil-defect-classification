@@ -1,6 +1,7 @@
-# Runtime dependencies for copper-foil classification on Python 3.10.
-# PyTorch is installed separately by scripts/bootstrap-server-env.sh so the
-# CUDA 12.8 wheel index can be selected explicitly for the RTX 5080.
+# Portable Copper supervised training, evaluation and inference dependencies.
+# Install a Python 3.10-compatible torch/torchvision pair separately, choosing
+# the correct CPU/CUDA wheel for your OS, driver and GPU architecture.
+# See README.md. No fixed GPU/CUDA runtime is installed by this file.
 timm==0.6.12
 numpy==1.26.4
 Pillow==10.4.0
@@ -8,5 +9,5 @@ opencv-python-headless==4.10.0.84
 tensorboardX==2.6.2.2
 submitit==1.5.1
 
-# Optional: only required for FCMAE self-supervised pretraining.
-# Install separately from https://github.com/NVIDIA/MinkowskiEngine
+# Optional FCMAE self-supervised pretraining needs additional MinkowskiEngine.
+# It is not required for ordinary supervised classification.
