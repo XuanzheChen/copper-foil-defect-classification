@@ -2,7 +2,38 @@
 
 Cross-platform, standalone **200 × 200 grayscale copper-foil image classification** based on ConvNeXt V2. This branch is intended for independent local or server use **without the original experiment archive, SSH synchronization, experiment wrapper, or fixed server paths**.
 
-> **Branch:** `portable/standalone` (maintained separately from `main`). The existing scientific preprocessing and model/checkpoint semantics are preserved. The automatic clone/CUDA-aware installation launcher is planned for a later phase; **manual installation instructions below are available now**.
+> **Branch:** `portable/standalone` (maintained separately from `main`). The existing scientific preprocessing and model/checkpoint semantics are preserved. An automatic Git/CUDA-aware installer is included for Windows and Linux; manual installation remains available as a fallback.
+
+## 0. Quick start: automatic installation
+
+The repository is **private**: Git must already be installed and authenticated to GitHub (SSH key or HTTPS credential manager). The launcher can automatically install user-level `uv` and managed Python 3.10, create an isolated project `.venv`, choose PyTorch `cu118`, `cu126`, `cu128`, or CPU according to NVIDIA GPU compute capability and driver requirements, and run an actual model-forward smoke test. It does not modify your system Python or Conda environment.
+
+**Linux (Bash):**
+
+```bash
+git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+bash copper-foil-defect-classification/install.sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+if ($LASTEXITCODE -eq 0) {
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\copper-foil-defect-classification\install.ps1
+}
+```
+
+**Already cloned?** In the `portable/standalone` repository root run `bash install.sh` on Linux, or `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1` on Windows.
+
+- For explicit CPU installation: `bash install.sh --backend cpu` / `.\install.ps1 -Backend cpu`
+- To clone directly into another directory: `bash install.sh --target ~/copper-new` / `.\install.ps1 -Target D:\copper-new`
+- To safely update the standalone branch: `bash install.sh --update` / `.\install.ps1 -Update`
+- To preview automatic CUDA selection: `bash install.sh --dry-run` / `.\install.ps1 -DryRun` (the launchers may still provision uv/Python)
+- To switch CPU/CUDA wheel profiles: add `--recreate-env` / `-RecreateEnv` (only Copper-managed virtual environments are eligible)
+- If GitHub HTTPS authentication is configured instead of SSH, use the HTTPS clone URL and optionally `--repo-url` / `-RepoUrl` when cloning through the installer.
+
+Installation reports are written to `.venv/copper-install-report.json`. The installer does not download datasets or trained checkpoints. See **[INSTALLER.md](INSTALLER.md)** for the full platform support table, driver thresholds, private repository authentication, safety rules and troubleshooting. The manual instructions in section 2 are kept for users who cannot run the automatic launcher.
 
 ## 1. Capabilities and entry points
 
