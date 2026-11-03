@@ -1,0 +1,25 @@
+name: Standalone smoke checks
+
+on:
+  push:
+    branches:
+      - portable/standalone
+  workflow_dispatch:
+
+jobs:
+  portable-smoke:
+    name: Python smoke / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Compile portable Python sources
+        run: python -m compileall -q scripts/copper.py scripts/create-data-manifest.py scripts/organize-inference-results.py infer_topk.py tests/test_portable_workflow.py
+      - name: Run dependency-free portability tests
+        run: python -m unittest discover -s tests -p test_portable_workflow.py -v

@@ -225,6 +225,13 @@ def main():
         cmd.add_argument("--workers", type=int, default=0)
         cmd.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
+    # Interpret relative paths from the caller's working directory, even
+    # though the backend programs execute from the repository root.
+    for name in ("data", "labels", "checkpoint", "output", "pretrained",
+                 "resume", "inference", "manifest"):
+        value = getattr(args, name, None)
+        if isinstance(value, Path):
+            setattr(args, name, value.expanduser().resolve())
     try:
         for name in ("epochs", "batch_size", "update_freq"):
             if hasattr(args, name) and getattr(args, name) < 1:
