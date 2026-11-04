@@ -1,0 +1,521 @@
+Not using distributed mode
+Namespace(batch_size=64, epochs=100, update_freq=1, model='convnextv2_tiny', input_size=200, drop_path=0.0, layer_decay_type='single', model_ema=False, model_ema_decay=0.9999, model_ema_force_cpu=False, model_ema_eval=False, clip_grad=None, weight_decay=0.05, lr=None, blr=0.0005, layer_decay=1.0, min_lr=1e-06, warmup_epochs=20, warmup_steps=-1, opt='adamw', opt_eps=1e-08, opt_betas=None, momentum=0.9, weight_decay_end=None, color_jitter=None, aa='rand-m9-mstd0.5-inc1', smoothing=0.1, copper_loss_weight=1.0, train_interpolation='bicubic', reprob=0.25, remode='pixel', recount=1, resplit=False, mixup=0.0, cutmix=0.0, cutmix_minmax=None, mixup_prob=1.0, mixup_switch_prob=0.5, mixup_mode='batch', finetune='', head_init_scale=0.001, model_key='model|module', model_prefix='', data_path='/share/data/cxz/1017-copper-foil-defect-classification-2/1104-301-formal-split-7classes/train', nb_classes=7, output_dir='/home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test', log_dir=None, device='cuda', seed=0, resume='/home/cxz/projects/copper-foil-defect-classification/experiments/20261104T082135Z-20261104-1621-1104-301-7classes-train/checkpoint-best.pth', eval_data_path='/share/data/cxz/1017-copper-foil-defect-classification-2/1104-301-formal-split-7classes/test', imagenet_default_mean_and_std=True, data_set='image_folder', auto_resume=True, save_ckpt=True, save_ckpt_freq=1, save_ckpt_num=3, start_epoch=0, eval=True, dist_eval=True, disable_eval=False, num_workers=10, pin_mem=True, crop_pct=None, confusion_matrix=True, save_eval_predictions=True, copper_sweep=False, copper_bias_min=0.0, copper_bias_max=5.0, copper_bias_steps=101, copper_threshold_min=0.001, copper_threshold_max=0.5, copper_threshold_steps=100, copper_sweep_min_precision=98.0, copper_sweep_max_acc_drop=0.1, best_acc_tolerance=0.1, hard_example_manifest='', hard_example_factor=1.0, world_size=1, local_rank=-1, dist_on_itp=False, dist_url='env://', use_amp=True, use_grayscale=False, HSVEnhance=False, HSVE_factors=[0.05, 0.1, 0.1], add_Gauss_Noise=False, GN_factors=[0, 25], load_encoder_only=False, freeze=False, class_labels='/home/cxz/projects/copper-foil-defect-classification/experiments/20261104T082135Z-20261104-1621-1104-301-7classes-train/class_labels.txt', distributed=False)
+Transform =
+Pad(padding=6, fill=0, padding_mode=reflect)
+RandomCrop(size=(200, 200), padding=None)
+<datasets.GrayscaleToRGB object at 0x7c2371bcfa30>
+ToTensor()
+Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+---------------------------
+Formal dataset root: /share/data/cxz/1017-copper-foil-defect-classification-2/1104-301-formal-split-7classes/train
+Admitted samples: 2993
+Excluded non-200x200 samples: 83
+Exclusion report: /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/preprocessing_reports/train/excluded_non_200x200.csv
+Number of the class = 7
+Transform =
+<datasets.GrayscaleToRGB object at 0x7c2371bcfc40>
+ToTensor()
+Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+---------------------------
+Formal dataset root: /share/data/cxz/1017-copper-foil-defect-classification-2/1104-301-formal-split-7classes/test
+Admitted samples: 672
+Excluded non-200x200 samples: 18
+Exclusion report: /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/preprocessing_reports/eval/excluded_non_200x200.csv
+Number of the class = 7
+Hard-example sampling disabled; using original DistributedSampler.
+Sampler_train = <torch.utils.data.distributed.DistributedSampler object at 0x7c237191feb0>
+Model = ConvNeXtV2(
+  (downsample_layers): ModuleList(
+    (0): Sequential(
+      (0): Conv2d(3, 96, kernel_size=(4, 4), stride=(4, 4))
+      (1): LayerNorm()
+    )
+    (1): Sequential(
+      (0): LayerNorm()
+      (1): Conv2d(96, 192, kernel_size=(2, 2), stride=(2, 2))
+    )
+    (2): Sequential(
+      (0): LayerNorm()
+      (1): Conv2d(192, 384, kernel_size=(2, 2), stride=(2, 2))
+    )
+    (3): Sequential(
+      (0): LayerNorm()
+      (1): Conv2d(384, 768, kernel_size=(2, 2), stride=(2, 2))
+    )
+  )
+  (stages): ModuleList(
+    (0): Sequential(
+      (0): Block(
+        (dwconv): Conv2d(96, 96, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=96)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=384, out_features=96, bias=True)
+        (drop_path): Identity()
+      )
+      (1): Block(
+        (dwconv): Conv2d(96, 96, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=96)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=384, out_features=96, bias=True)
+        (drop_path): Identity()
+      )
+      (2): Block(
+        (dwconv): Conv2d(96, 96, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=96)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=384, out_features=96, bias=True)
+        (drop_path): Identity()
+      )
+    )
+    (1): Sequential(
+      (0): Block(
+        (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+        (drop_path): Identity()
+      )
+      (1): Block(
+        (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+        (drop_path): Identity()
+      )
+      (2): Block(
+        (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+        (drop_path): Identity()
+      )
+    )
+    (2): Sequential(
+      (0): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (1): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (2): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (3): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (4): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (5): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (6): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (7): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+      (8): Block(
+        (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop_path): Identity()
+      )
+    )
+    (3): Sequential(
+      (0): Block(
+        (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop_path): Identity()
+      )
+      (1): Block(
+        (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop_path): Identity()
+      )
+      (2): Block(
+        (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+        (norm): LayerNorm()
+        (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (grn): GRN()
+        (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop_path): Identity()
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): Linear(in_features=768, out_features=7, bias=True)
+)
+number of params: 27871879
+number of trainable params: 27871879
+base lr: 5.00e-04
+actual lr: 1.25e-04
+accumulate grad iterations: 1
+effective batch size: 64
+Param groups = {
+  "decay": {
+    "weight_decay": 0.05,
+    "params": [
+      "downsample_layers.0.0.weight",
+      "downsample_layers.1.1.weight",
+      "downsample_layers.2.1.weight",
+      "downsample_layers.3.1.weight",
+      "stages.0.0.dwconv.weight",
+      "stages.0.0.pwconv1.weight",
+      "stages.0.0.pwconv2.weight",
+      "stages.0.1.dwconv.weight",
+      "stages.0.1.pwconv1.weight",
+      "stages.0.1.pwconv2.weight",
+      "stages.0.2.dwconv.weight",
+      "stages.0.2.pwconv1.weight",
+      "stages.0.2.pwconv2.weight",
+      "stages.1.0.dwconv.weight",
+      "stages.1.0.pwconv1.weight",
+      "stages.1.0.pwconv2.weight",
+      "stages.1.1.dwconv.weight",
+      "stages.1.1.pwconv1.weight",
+      "stages.1.1.pwconv2.weight",
+      "stages.1.2.dwconv.weight",
+      "stages.1.2.pwconv1.weight",
+      "stages.1.2.pwconv2.weight",
+      "stages.2.0.dwconv.weight",
+      "stages.2.0.pwconv1.weight",
+      "stages.2.0.pwconv2.weight",
+      "stages.2.1.dwconv.weight",
+      "stages.2.1.pwconv1.weight",
+      "stages.2.1.pwconv2.weight",
+      "stages.2.2.dwconv.weight",
+      "stages.2.2.pwconv1.weight",
+      "stages.2.2.pwconv2.weight",
+      "stages.2.3.dwconv.weight",
+      "stages.2.3.pwconv1.weight",
+      "stages.2.3.pwconv2.weight",
+      "stages.2.4.dwconv.weight",
+      "stages.2.4.pwconv1.weight",
+      "stages.2.4.pwconv2.weight",
+      "stages.2.5.dwconv.weight",
+      "stages.2.5.pwconv1.weight",
+      "stages.2.5.pwconv2.weight",
+      "stages.2.6.dwconv.weight",
+      "stages.2.6.pwconv1.weight",
+      "stages.2.6.pwconv2.weight",
+      "stages.2.7.dwconv.weight",
+      "stages.2.7.pwconv1.weight",
+      "stages.2.7.pwconv2.weight",
+      "stages.2.8.dwconv.weight",
+      "stages.2.8.pwconv1.weight",
+      "stages.2.8.pwconv2.weight",
+      "stages.3.0.dwconv.weight",
+      "stages.3.0.pwconv1.weight",
+      "stages.3.0.pwconv2.weight",
+      "stages.3.1.dwconv.weight",
+      "stages.3.1.pwconv1.weight",
+      "stages.3.1.pwconv2.weight",
+      "stages.3.2.dwconv.weight",
+      "stages.3.2.pwconv1.weight",
+      "stages.3.2.pwconv2.weight",
+      "head.weight"
+    ],
+    "lr_scale": 1.0
+  },
+  "no_decay": {
+    "weight_decay": 0.0,
+    "params": [
+      "downsample_layers.0.0.bias",
+      "downsample_layers.0.1.weight",
+      "downsample_layers.0.1.bias",
+      "downsample_layers.1.0.weight",
+      "downsample_layers.1.0.bias",
+      "downsample_layers.1.1.bias",
+      "downsample_layers.2.0.weight",
+      "downsample_layers.2.0.bias",
+      "downsample_layers.2.1.bias",
+      "downsample_layers.3.0.weight",
+      "downsample_layers.3.0.bias",
+      "downsample_layers.3.1.bias",
+      "stages.0.0.dwconv.bias",
+      "stages.0.0.norm.weight",
+      "stages.0.0.norm.bias",
+      "stages.0.0.pwconv1.bias",
+      "stages.0.0.grn.gamma",
+      "stages.0.0.grn.beta",
+      "stages.0.0.pwconv2.bias",
+      "stages.0.1.dwconv.bias",
+      "stages.0.1.norm.weight",
+      "stages.0.1.norm.bias",
+      "stages.0.1.pwconv1.bias",
+      "stages.0.1.grn.gamma",
+      "stages.0.1.grn.beta",
+      "stages.0.1.pwconv2.bias",
+      "stages.0.2.dwconv.bias",
+      "stages.0.2.norm.weight",
+      "stages.0.2.norm.bias",
+      "stages.0.2.pwconv1.bias",
+      "stages.0.2.grn.gamma",
+      "stages.0.2.grn.beta",
+      "stages.0.2.pwconv2.bias",
+      "stages.1.0.dwconv.bias",
+      "stages.1.0.norm.weight",
+      "stages.1.0.norm.bias",
+      "stages.1.0.pwconv1.bias",
+      "stages.1.0.grn.gamma",
+      "stages.1.0.grn.beta",
+      "stages.1.0.pwconv2.bias",
+      "stages.1.1.dwconv.bias",
+      "stages.1.1.norm.weight",
+      "stages.1.1.norm.bias",
+      "stages.1.1.pwconv1.bias",
+      "stages.1.1.grn.gamma",
+      "stages.1.1.grn.beta",
+      "stages.1.1.pwconv2.bias",
+      "stages.1.2.dwconv.bias",
+      "stages.1.2.norm.weight",
+      "stages.1.2.norm.bias",
+      "stages.1.2.pwconv1.bias",
+      "stages.1.2.grn.gamma",
+      "stages.1.2.grn.beta",
+      "stages.1.2.pwconv2.bias",
+      "stages.2.0.dwconv.bias",
+      "stages.2.0.norm.weight",
+      "stages.2.0.norm.bias",
+      "stages.2.0.pwconv1.bias",
+      "stages.2.0.grn.gamma",
+      "stages.2.0.grn.beta",
+      "stages.2.0.pwconv2.bias",
+      "stages.2.1.dwconv.bias",
+      "stages.2.1.norm.weight",
+      "stages.2.1.norm.bias",
+      "stages.2.1.pwconv1.bias",
+      "stages.2.1.grn.gamma",
+      "stages.2.1.grn.beta",
+      "stages.2.1.pwconv2.bias",
+      "stages.2.2.dwconv.bias",
+      "stages.2.2.norm.weight",
+      "stages.2.2.norm.bias",
+      "stages.2.2.pwconv1.bias",
+      "stages.2.2.grn.gamma",
+      "stages.2.2.grn.beta",
+      "stages.2.2.pwconv2.bias",
+      "stages.2.3.dwconv.bias",
+      "stages.2.3.norm.weight",
+      "stages.2.3.norm.bias",
+      "stages.2.3.pwconv1.bias",
+      "stages.2.3.grn.gamma",
+      "stages.2.3.grn.beta",
+      "stages.2.3.pwconv2.bias",
+      "stages.2.4.dwconv.bias",
+      "stages.2.4.norm.weight",
+      "stages.2.4.norm.bias",
+      "stages.2.4.pwconv1.bias",
+      "stages.2.4.grn.gamma",
+      "stages.2.4.grn.beta",
+      "stages.2.4.pwconv2.bias",
+      "stages.2.5.dwconv.bias",
+      "stages.2.5.norm.weight",
+      "stages.2.5.norm.bias",
+      "stages.2.5.pwconv1.bias",
+      "stages.2.5.grn.gamma",
+      "stages.2.5.grn.beta",
+      "stages.2.5.pwconv2.bias",
+      "stages.2.6.dwconv.bias",
+      "stages.2.6.norm.weight",
+      "stages.2.6.norm.bias",
+      "stages.2.6.pwconv1.bias",
+      "stages.2.6.grn.gamma",
+      "stages.2.6.grn.beta",
+      "stages.2.6.pwconv2.bias",
+      "stages.2.7.dwconv.bias",
+      "stages.2.7.norm.weight",
+      "stages.2.7.norm.bias",
+      "stages.2.7.pwconv1.bias",
+      "stages.2.7.grn.gamma",
+      "stages.2.7.grn.beta",
+      "stages.2.7.pwconv2.bias",
+      "stages.2.8.dwconv.bias",
+      "stages.2.8.norm.weight",
+      "stages.2.8.norm.bias",
+      "stages.2.8.pwconv1.bias",
+      "stages.2.8.grn.gamma",
+      "stages.2.8.grn.beta",
+      "stages.2.8.pwconv2.bias",
+      "stages.3.0.dwconv.bias",
+      "stages.3.0.norm.weight",
+      "stages.3.0.norm.bias",
+      "stages.3.0.pwconv1.bias",
+      "stages.3.0.grn.gamma",
+      "stages.3.0.grn.beta",
+      "stages.3.0.pwconv2.bias",
+      "stages.3.1.dwconv.bias",
+      "stages.3.1.norm.weight",
+      "stages.3.1.norm.bias",
+      "stages.3.1.pwconv1.bias",
+      "stages.3.1.grn.gamma",
+      "stages.3.1.grn.beta",
+      "stages.3.1.pwconv2.bias",
+      "stages.3.2.dwconv.bias",
+      "stages.3.2.norm.weight",
+      "stages.3.2.norm.bias",
+      "stages.3.2.pwconv1.bias",
+      "stages.3.2.grn.gamma",
+      "stages.3.2.grn.beta",
+      "stages.3.2.pwconv2.bias",
+      "norm.weight",
+      "norm.bias",
+      "head.bias"
+    ],
+    "lr_scale": 1.0
+  }
+}
+criterion = LabelSmoothingCrossEntropy()
+Model weights loaded successfully.
+Resume checkpoint /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T082135Z-20261104-1621-1104-301-7classes-train/checkpoint-best.pth
+Optimizer parameter groups mismatch. Recreating optimizer...
+With optim & sched!
+Eval only mode
+Evaluate:  [ 0/11]  eta: 0:00:12  loss: 0.1283 (0.1283)  acc1: 100.0000 (100.0000)  acc5: 100.0000 (100.0000)  time: 1.1662  data: 0.2021  max mem: 850
+Evaluate:  [10/11]  eta: 0:00:00  loss: 0.1385 (0.1515)  acc1: 98.4375 (98.8095)  acc5: 100.0000 (100.0000)  time: 0.1485  data: 0.0184  max mem: 850
+Evaluate: Total time: 0:00:01 (0.1503 s / it)
+* Acc@1 98.810 Acc@5 100.000 loss 0.151
+Evaluation speed: 406.45 images/s
+With 120 samples, Class 凹凸: 99.17%
+With 105 samples, Class 刮伤: 100.00%
+With 80 samples, Class 压坑: 98.75%
+With 102 samples, Class 异物: 99.02%
+With 44 samples, Class 拖尾: 97.73%
+With 46 samples, Class 铜瘤: 95.65%
+With 175 samples, Class 黑点: 98.86%
+* Overall Acc@1 98.810% | Macro Recall 98.453% | 铜瘤 Recall 95.652% | 铜瘤 Precision 97.778%
+Wrote confusion matrix (counts): /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/confusion_matrix.csv
+Wrote confusion matrix (row-normalized %): /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/confusion_matrix_normalized.csv
+Confusion matrix (rows=true, cols=predicted):
+      凹凸  刮伤  压坑  异物  拖尾  铜瘤  黑点  
+凹凸     119     0     0     0     0     0     1
+刮伤       0   105     0     0     0     0     0
+压坑       0     0    79     0     0     0     1
+异物       0     0     0   101     0     1     0
+拖尾       0     0     0     0    43     0     1
+铜瘤       0     0     1     1     0    44     0
+黑点       0     1     0     0     1     0   173
+
+Top confusions (true -> predicted, count):
+  凹凸 -> 黑点: 1
+  压坑 -> 黑点: 1
+  异物 -> 铜瘤: 1
+  拖尾 -> 黑点: 1
+  铜瘤 -> 压坑: 1
+  铜瘤 -> 异物: 1
+  黑点 -> 刮伤: 1
+  黑点 -> 拖尾: 1
+Wrote per-sample predictions: /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/eval_predictions.csv
+Wrote misclassified subset (8 rows): /home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/test/eval_misclassified.csv
+Evaluation summary on 672 images — Overall Acc@1: 98.80952% | Macro Recall: 98.45327% | 铜瘤 Recall: 95.65217% | 铜瘤 Precision: 97.77778%
+{"source_files_verified": 4916, "source_images": 4913}
+{
+  "verified": true,
+  "predicted_images": 4747,
+  "excluded_images": 166,
+  "source_files": 4916,
+  "source_metadata_files": 3,
+  "per_class": {
+    "凹凸": 107,
+    "刮伤": 145,
+    "压坑": 42,
+    "异物": 1305,
+    "拖尾": 89,
+    "铜瘤": 9,
+    "黑点": 3050
+  },
+  "confidence_bin_totals": {
+    "confidence_gt_0.9": 535,
+    "confidence_0.8_to_0.9": 818,
+    "confidence_0.7_to_0.8": 469,
+    "confidence_0.6_to_0.7": 575,
+    "confidence_0.5_to_0.6": 1317,
+    "confidence_lt_0.5": 1033
+  },
+  "low_confidence_samples": 2925,
+  "all_copied_image_hashes_verified": true,
+  "original_files_preserved": true,
+  "checkpoint_sha256": "6b9f139b268a77972e4f5ea73715577e061112dda2a7ef6a5b9de2fb1b0610c9",
+  "inference_images_per_second": 1171.3191394693429,
+  "confidence_boundaries": [
+    "p > 0.9",
+    "0.8 <= p <= 0.9",
+    "0.7 <= p < 0.8",
+    "0.6 <= p < 0.7",
+    "0.5 <= p < 0.6",
+    "p < 0.5"
+  ]
+}

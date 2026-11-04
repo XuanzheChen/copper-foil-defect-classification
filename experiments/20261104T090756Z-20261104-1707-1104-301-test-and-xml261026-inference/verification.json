@@ -1,0 +1,106 @@
+{
+  "verified": true,
+  "run_dir": "/home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference",
+  "finished_at": "2026-11-04T09:08:08Z",
+  "test": {
+    "samples": 672,
+    "excluded_non_200x200": 18,
+    "correct": 664,
+    "errors": 8,
+    "accuracy_percent": 98.80952380952381,
+    "macro_recall_percent": 98.45326628675186,
+    "images_per_second": 406.45,
+    "per_class": [
+      {
+        "class": "凹凸",
+        "samples": 120,
+        "correct": 119,
+        "recall_percent": 99.16666666666667,
+        "precision_percent": 100.0
+      },
+      {
+        "class": "刮伤",
+        "samples": 105,
+        "correct": 105,
+        "recall_percent": 100.0,
+        "precision_percent": 99.05660377358491
+      },
+      {
+        "class": "压坑",
+        "samples": 80,
+        "correct": 79,
+        "recall_percent": 98.75,
+        "precision_percent": 98.75
+      },
+      {
+        "class": "异物",
+        "samples": 102,
+        "correct": 101,
+        "recall_percent": 99.01960784313725,
+        "precision_percent": 99.01960784313725
+      },
+      {
+        "class": "拖尾",
+        "samples": 44,
+        "correct": 43,
+        "recall_percent": 97.72727272727273,
+        "precision_percent": 97.72727272727273
+      },
+      {
+        "class": "铜瘤",
+        "samples": 46,
+        "correct": 44,
+        "recall_percent": 95.65217391304348,
+        "precision_percent": 97.77777777777777
+      },
+      {
+        "class": "黑点",
+        "samples": 175,
+        "correct": 173,
+        "recall_percent": 98.85714285714286,
+        "precision_percent": 98.29545454545455
+      }
+    ]
+  },
+  "inference": {
+    "verified": true,
+    "predicted_images": 4747,
+    "excluded_images": 166,
+    "source_files": 4916,
+    "source_metadata_files": 3,
+    "per_class": {
+      "凹凸": 107,
+      "刮伤": 145,
+      "压坑": 42,
+      "异物": 1305,
+      "拖尾": 89,
+      "铜瘤": 9,
+      "黑点": 3050
+    },
+    "confidence_bin_totals": {
+      "confidence_gt_0.9": 535,
+      "confidence_0.8_to_0.9": 818,
+      "confidence_0.7_to_0.8": 469,
+      "confidence_0.6_to_0.7": 575,
+      "confidence_0.5_to_0.6": 1317,
+      "confidence_lt_0.5": 1033
+    },
+    "low_confidence_samples": 2925,
+    "all_copied_image_hashes_verified": true,
+    "original_files_preserved": true,
+    "checkpoint_sha256": "6b9f139b268a77972e4f5ea73715577e061112dda2a7ef6a5b9de2fb1b0610c9",
+    "inference_images_per_second": 1171.3191394693429,
+    "confidence_boundaries": [
+      "p > 0.9",
+      "0.8 <= p <= 0.9",
+      "0.7 <= p < 0.8",
+      "0.6 <= p < 0.7",
+      "0.5 <= p < 0.6",
+      "p < 0.5"
+    ]
+  },
+  "organized_copy_count": 9663,
+  "independently_verified_all_source_and_copy_sha256": true,
+  "source_originals_unchanged": true,
+  "sync_status": "not-requested"
+}

@@ -1,3 +1,5 @@
 # Preserve exact bytes for these archived experiment records.
 /experiments/20261030T113132Z-20261030-1931-1017-301-1030added-7classes-train/** -text
 /experiments/20261030T120646Z-20261030-added-7classes-test/** -text
+/experiments/20261104T082135Z-20261104-1621-1104-301-7classes-train/** -text
+/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/** -text

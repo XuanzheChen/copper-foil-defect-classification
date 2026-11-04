@@ -1,0 +1,33 @@
+{
+  "verified": true,
+  "source": "/share/data/cxz/1017-copper-foil-defect-classification-2/xml_26102602012_2026-10-28_21_5",
+  "remote_output": "/home/cxz/projects/copper-foil-defect-classification/experiments/20261104T090756Z-20261104-1707-1104-301-test-and-xml261026-inference/organized_top1_conf070",
+  "threshold": 0.7,
+  "class_rule": "top1_conf > 0.7",
+  "other_rule": "top1_conf <= 0.7",
+  "images": 4747,
+  "high_confidence_images": 1822,
+  "other_images": 2925,
+  "equal_to_threshold_images": 0,
+  "folder_counts": {
+    "凹凸": 37,
+    "凹凸(other)": 70,
+    "刮伤": 43,
+    "刮伤(other)": 102,
+    "压坑": 23,
+    "压坑(other)": 19,
+    "异物": 56,
+    "异物(other)": 1249,
+    "拖尾": 51,
+    "拖尾(other)": 38,
+    "铜瘤": 5,
+    "铜瘤(other)": 4,
+    "黑点": 1607,
+    "黑点(other)": 1443
+  },
+  "excluded_non_200x200": 166,
+  "all_source_and_copied_sha256_verified": true,
+  "original_files_preserved": true,
+  "checkpoint_sha256": "6b9f139b268a77972e4f5ea73715577e061112dda2a7ef6a5b9de2fb1b0610c9",
+  "predictions_sha256": "89c97a43897d7889ed284d33a10f581f36cd57cb5bfed784ead3c2afb9fbe4a9"
+}

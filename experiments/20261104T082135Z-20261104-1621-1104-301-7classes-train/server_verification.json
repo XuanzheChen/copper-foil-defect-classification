@@ -1,0 +1,36 @@
+{
+  "verified": true,
+  "image_count": 4422,
+  "counts": {
+    "test": 690,
+    "train": 3076,
+    "val": 656
+  },
+  "valid200_counts": {
+    "test": 672,
+    "train": 2993,
+    "val": 642
+  },
+  "excluded_duplicate_files": 16,
+  "unique_sha256": 4422,
+  "class_labels": [
+    "凹凸",
+    "刮伤",
+    "压坑",
+    "异物",
+    "拖尾",
+    "铜瘤",
+    "黑点"
+  ],
+  "torch": "2.7.1+cu128",
+  "cuda_runtime": "12.8",
+  "gpu": "NVIDIA GeForce RTX 5080",
+  "pretrained_weight": "/home/cxz/projects/copper-foil-defect-classification/pretrained-weights/convnextv2_tiny_1k_224_ema.pt",
+  "pretrained_sha256": "b23c89e2e601d2459bc35f8fef1bf6a3e9c90ab44b2f5b2d1117b984ac7f89a4",
+  "archive_sha256": "c2f65e105f3ea9d95e699e8b06d10419c93cf7aef17292bdda90f70ff40358d9",
+  "code_commit": "3cc727e183b6d8ca98d1d3e24acb59c6348c23b7",
+  "split_seed": 42,
+  "training_seed": 0,
+  "reused_images_verified_and_copied": 3936,
+  "uploaded_images": 486
+}
