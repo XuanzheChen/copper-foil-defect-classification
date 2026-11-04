@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Organize inference images by Top-1 while preserving originals and provenance.
+"""Organize inference images by Top-1 and confidence without modifying inputs.
 
-Portable across Windows and Linux. Supports arbitrary class counts, Top-k and
-confidence thresholds from the inference summary. No PyTorch dependency.
+Samples with Top-1 confidence < the inference summary's conf threshold are
+copied to <top1_class>(other)/. All other samples go to <top1_class>/.
+Portable across Windows and Linux; verifies original inputs with SHA-256.
+No PyTorch dependency.
 """
 import argparse
 import csv
@@ -68,6 +70,11 @@ def organize(data, predictions, summary_path, manifest_path, labels_path, output
     summary = json.loads(Path(summary_path).read_text(encoding="utf-8"))
     manifest = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
     labels = parse_labels(labels_path)
+    # Prevent overlapping output folders, including Windows case-insensitive
+    # collisions if a real class already has another class's "(other)" name.
+    folder_names = [folder for label in labels for folder in (label, f"{label}(other)")]
+    if len({name.casefold() for name in folder_names}) != len(folder_names):
+        raise ValueError('Class names collide with generated "(other)" folders')
     k, conf = summary["k"], summary["conf"]
     if type(k) is not int or not 1 <= k <= len(labels) or not finite_probability(conf):
         raise ValueError("Invalid k/conf in inference summary")
@@ -151,12 +158,14 @@ def organize(data, predictions, summary_path, manifest_path, labels_path, output
     low_rows = []
     with (output / "top1_predictions.csv").open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=[
-            "source_path", "organized_path", "top1_label", "top1_conf", "low_confidence", "sha256"
+            "source_path", "organized_path", "top1_label", "organized_class",
+            "top1_conf", "low_confidence", "sha256"
         ])
         writer.writeheader()
         for name, row in rows:
             label = row["pred_label"]
-            relative = (PurePosixPath("by_top1") / label / name).as_posix()
+            organized_class = f"{label}(other)" if row["low_confidence"] else label
+            relative = (PurePosixPath("by_top1") / organized_class / name).as_posix()
             destination = output / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(data / name, destination)
@@ -165,7 +174,8 @@ def organize(data, predictions, summary_path, manifest_path, labels_path, output
             counts[label] += 1
             record = {
                 "source_path": name, "organized_path": relative,
-                "top1_label": label, "top1_conf": row["top1_conf"],
+                "top1_label": label, "organized_class": organized_class,
+                "top1_conf": row["top1_conf"],
                 "low_confidence": row["low_confidence"], "sha256": files[name]["sha256"],
             }
             writer.writerow(record)
@@ -179,12 +189,18 @@ def organize(data, predictions, summary_path, manifest_path, labels_path, output
     (output / low_filename).write_text(
         json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    organized_counts = {label: counts[label] - low_counts[label] for label in labels}
+    organized_counts.update({
+        f"{label}(other)": low_counts[label] for label in labels if low_counts[label] > 0
+    })
     report = {
         "source_files": len(files), "source_images": sum(r["is_image"] for r in files.values()),
         "classified_images": len(rows), "excluded_non_200x200": excluded,
         "non_image_files": sum(not r["is_image"] for r in files.values()),
         "per_class": counts, "low_confidence_per_class": low_counts,
+        "organized_per_class": organized_counts,
         "low_confidence_samples": len(low_rows), "conf": conf, "k": k,
+        "low_confidence_routing": "top1_class(other) when top1_conf < conf",
         "original_images_preserved": True, "all_copied_image_hashes_verified": True,
         "manifest_sha256": sha256(manifest_path), "predictions_sha256": sha256(predictions),
         "checkpoint_sha256": summary["checkpoint_sha256"],

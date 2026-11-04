@@ -23,6 +23,8 @@ jobs:
         run: python -m compileall -q scripts/copper.py scripts/create-data-manifest.py scripts/organize-inference-results.py scripts/install/bootstrap.py infer_topk.py tests/test_portable_workflow.py tests/test_installer.py
       - name: Run dependency-free portability tests
         run: python -m unittest discover -s tests -p test_portable_workflow.py -v
+      - name: Run confidence-based inference organization tests
+        run: python -m unittest discover -s tests -p test_organize_inference_results.py -v
       - name: Run offline installer policy tests
         run: python -m unittest discover -s tests -p test_installer.py -v
       - name: Bash installer syntax

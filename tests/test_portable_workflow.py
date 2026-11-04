@@ -73,13 +73,17 @@ class PortableWorkflowTests(unittest.TestCase):
         self.assertEqual(result["k"], 2)
         self.assertEqual(result["conf"], 0.4)
         self.assertTrue((self.output / "low_confidence_top2.json").exists())
-        self.assertEqual((self.output / "by_top1/Alpha/sample.png").read_bytes(), self.image.read_bytes())
+        self.assertEqual((self.output / "by_top1/Alpha(other)/sample.png").read_bytes(), self.image.read_bytes())
+        self.assertFalse((self.output / "by_top1/Alpha/sample.png").exists())
+        self.assertEqual(result["organized_per_class"]["Alpha"], 0)
+        self.assertEqual(result["organized_per_class"]["Alpha(other)"], 1)
 
     def test_windows_recorded_paths_on_any_os(self):
         self.write_predictions("C:\\copper\\images", "C:\\copper\\images\\sample.png")
         result = self.organize()
         self.assertEqual(result["classified_images"], 1)
         self.assertTrue(self.image.exists())
+        self.assertTrue((self.output / "by_top1/Alpha(other)/sample.png").exists())
 
     def test_reject_mismatched_snapshot_before_copy(self):
         self.write_predictions("/srv/data", "/srv/data/sample.png")

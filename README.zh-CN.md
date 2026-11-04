@@ -116,7 +116,7 @@ Get-Content .\.venv\copper-install-report.json
 | 监督训练 | `python scripts/copper.py train` | 保留原模型、200×200 正式预处理和检查点选择 |
 | 模型测试/验证 | `python scripts/copper.py eval` | 从检查点读取模型架构、输入尺寸和类别数 |
 | 文件夹批量推理 | `python scripts/copper.py infer` | 自动生成输入文件 SHA-256 清单并输出 Top-k |
-| 推理结果整理 | `python scripts/copper.py organize` | 按 Top-1 复制分类，验证清单，不移动原图 |
+| 推理结果整理 | `python scripts/copper.py organize` | 低置信度按 Top-1 归入 `类别(other)/`，校验清单且不移动原图 |
 | 单张图片推理 | `python infer_topk.py` | 直接调用底层推理入口 |
 | 七类最小部署包 | `deployment/minimal/` | 特定历史模型的可选打包工具 |
 | 高级训练 | `main_finetune.py` | 保留类别损失权重、难例重采样等高级参数 |
@@ -339,7 +339,7 @@ CPU 模式使用 `--device cpu`；直接调用 `infer_topk.py` 时还需 `--amp 
 
 ## 7. 批量推理后的数据集整理
 
-完成第 6 节的文件夹推理后，可自动根据 Top-1 预测类别将图片复制到对应文件夹，同时保持原始数据不变。
+完成第 6 节的文件夹推理后，可按 **Top-1 预测类别 + 置信度阈值** 将图片复制到不同目录，原始数据保持不变。
 
 ### 统一命令
 
@@ -353,17 +353,31 @@ python scripts/copper.py organize --data ./data/images --inference ./outputs/inf
 python scripts/organize-inference-results.py --data ./data/images --predictions ./outputs/inference/all_predictions.jsonl --summary ./outputs/inference/summary.json --manifest ./outputs/inference/manifest.json --class-labels ./configs/class_labels_csd.txt --output ./outputs/organized
 ```
 
-生成结果大致如下：
+### 按 conf 分流到普通类别与 `(other)` 类别
+
+整理工具直接读取本次推理 `summary.json` 中的 `conf`（如 `0.7`），不要求在 `organize` 命令中再次传入阈值：
+
+- **Top-1 置信度 ≥ conf**：复制到 `by_top1/类别名/`。
+- **Top-1 置信度 < conf**：复制到 `by_top1/类别名(other)/`。
+- **恰好等于 conf**：属于普通类别，而不是 `(other)`。
+- 例如，预测为 `class_a`、置信度 `0.69` 且 `conf=0.7` 的样本进入 `class_a(other)`；同类置信度 `0.70` 的样本进入 `class_a`。
+
+整理后的目录示例：
 
 ```text
 outputs/organized/
   by_top1/
-    class_a/...
-    class_b/...
-  top1_predictions.csv
-  low_confidence_top3.json     # 文件名随 k 变化
-  organization_summary.json
+    class_a/                 # Top-1 是 class_a，置信度 >= conf
+    class_a(other)/          # Top-1 是 class_a，置信度 < conf
+    class_b/                 # Top-1 是 class_b 的高置信度样本
+    class_b(other)/          # class_b 存在低置信度样本时才创建
+  top1_predictions.csv       # 保留预测类别，并增加 organized_class 实际归档目录
+  low_confidence_top3.json   # 低置信度 Top-k 候选，文件名随 k 变化
+  organization_summary.json  # 原预测数、低置信度数、最终各目录数量
 ```
+
+**注意：**`(other)` 只是样本整理目录，不是新的模型类别，不改变 Top-1 预测结果。汇总中 `per_class` 仍代表所有 Top-1 类别数量，`low_confidence_per_class` 是其中低置信度数量，新增 `organized_per_class` 对应实际归档目录。若真实标签名与自动生成的 `类别(other)` 目录冲突（含 Windows 大小写不敏感的情况），整理器会拒绝执行，避免误混样本。**如需修改 conf，应重新用目标 `--conf` 批量推理，再整理新结果**，而不是直接修改 `summary.json`。
+
 
 **完整性保护：**
 

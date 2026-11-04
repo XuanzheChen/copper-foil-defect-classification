@@ -81,7 +81,7 @@ Installation reports are written to `.venv/copper-install-report.json`. The inst
 | Supervised training | `python scripts/copper.py train` | Retains existing 200×200 preprocessing, augmentation, and checkpoint selection |
 | Evaluation on train/val/test | `python scripts/copper.py eval` | Reads architecture, class count, input size from the checkpoint |
 | Folder/batch inference | `python scripts/copper.py infer` | Creates a SHA-256 dataset snapshot, then runs Top-k inference |
-| Dataset organization | `python scripts/copper.py organize` | Copies by Top-1, preserves originals, verifies snapshot and predictions |
+| Dataset organization | `python scripts/copper.py organize` | Routes low-confidence Top-1 images to `<class>(other)/`, preserves originals and verifies snapshot |
 | Single-image inference | `python infer_topk.py` | Direct low-level entry point |
 | Minimal seven-class release | `deployment/minimal/` | Optional model-specific packaging tooling |
 | Optional class-loss and hard-example controls | `main_finetune.py` | Advanced training options retained in the core |
@@ -309,17 +309,25 @@ Equivalent direct command:
 python scripts/organize-inference-results.py --data ./data/images --predictions ./outputs/inference/all_predictions.jsonl --summary ./outputs/inference/summary.json --manifest ./outputs/inference/manifest.json --class-labels ./configs/class_labels_csd.txt --output ./outputs/organized
 ```
 
-Generated organization layout:
+**Confidence-based destination folders:** the organizer uses the exact `conf` stored in the inference `summary.json` (for example, `0.7`). The value is **not recalculated or overridden at organization time**.
+
+- `top1_conf >= conf`: copy into `by_top1/<top1_class>/`.
+- `top1_conf < conf`: copy into `by_top1/<top1_class>(other)/`. This retains the predicted class while clearly separating uncertain samples. Equality belongs to the normal class.
+- For example, a `class_a` Top-1 prediction with confidence `0.69` at `conf=0.7` goes into `class_a(other)`; one with confidence `0.70` goes into `class_a`.
 
 ```text
 outputs/organized/
   by_top1/
-    class_a/...
-    class_b/...
-  top1_predictions.csv
-  low_confidence_top3.json   # name varies with k
-  organization_summary.json
+    class_a/                 # Top-1 class_a, confidence >= conf
+    class_a(other)/          # Top-1 class_a, confidence < conf
+    class_b/
+    class_b(other)/          # created only if class_b has low-confidence images
+  top1_predictions.csv       # includes original Top-1 + actual organized_class
+  low_confidence_top3.json   # name varies with k; still contains Top-k candidates
+  organization_summary.json  # per_class, low_confidence_per_class, organized_per_class
 ```
+
+The `(other)` suffix is an **organizational bucket**, not an extra model label. `per_class` still counts all Top-1 predictions; `organized_per_class` reports actual destination-folder counts. If a real label conflicts with a generated `<class>(other)` folder (including Windows case-insensitive collisions), organization refuses to proceed. To change the threshold, rerun inference with a new `--conf`, then organize that result.
 
 **Safety guarantees:** original inputs are copied, never moved; each input file is checked against its SHA-256 manifest; prediction coverage must be complete and unique; invalid/mismatched class data and confidence rules are rejected; output collision causes a refusal to overwrite. The organizer supports class counts and `k/conf` values recorded by the inference run, rather than hardcoding the old seven-class Top-3 configuration.
 

@@ -52,14 +52,60 @@ class OrganizeInferenceTests(unittest.TestCase):
         result = self.run_organizer()
         self.assertEqual(result['classified_images'], 2)
         self.assertEqual(result['excluded_non_200x200'], 1)
-        self.assertEqual(len(list((self.output / 'by_top1').iterdir())), 7)
-        for folder in ('a', 'b'):
-            self.assertEqual((self.output / 'by_top1/凹凸' / folder / 'same.png').read_bytes(), (self.data / folder / 'same.png').read_bytes())
+        self.assertEqual(len(list((self.output / 'by_top1').iterdir())), 8)
+        self.assertEqual(
+            (self.output / 'by_top1/凹凸/a/same.png').read_bytes(),
+            (self.data / 'a/same.png').read_bytes()
+        )
+        self.assertEqual(
+            (self.output / 'by_top1/凹凸(other)/b/same.png').read_bytes(),
+            (self.data / 'b/same.png').read_bytes()
+        )
+        self.assertFalse((self.output / 'by_top1/凹凸/b/same.png').exists())
+        self.assertFalse((self.output / 'by_top1/凹凸(other)/a/same.png').exists())
+        self.assertEqual(result['per_class']['凹凸'], 2)  # total predicted Top-1
+        self.assertEqual(result['low_confidence_per_class']['凹凸'], 1)
+        self.assertEqual(result['organized_per_class']['凹凸'], 1)
+        self.assertEqual(result['organized_per_class']['凹凸(other)'], 1)
+        with (self.output / 'top1_predictions.csv').open(encoding='utf-8', newline='') as source:
+            import csv
+            records = list(csv.DictReader(source))
+        self.assertEqual([r['organized_class'] for r in records], ['凹凸', '凹凸(other)'])
+        self.assertEqual([r['low_confidence'] for r in records], ['False', 'True'])
         low = json.loads((self.output / 'low_confidence_top3.json').read_text(encoding='utf-8'))
         self.assertEqual(low['samples'], 1)
         self.assertEqual(low['records'][0]['source_path'], 'b/same.png')
         self.assertEqual([r['class_name'] for r in low['records'][0]['top3']], ['凹凸', '压坑', '铜瘤'])
         self.assertTrue((self.data / 'large.png').exists())
+        self.assertEqual(low['records'][0]['organized_class'], '凹凸(other)')
+
+    def test_low_confidence_is_grouped_by_its_own_top1_class(self):
+        # The same threshold applies to all categories, but every low
+        # confidence image remains associated with its predicted class.
+        self.rows[1]['pred_label'] = '压坑'
+        self.rows[1]['topk'] = [
+            {'class_id': 2, 'class_name': '压坑', 'confidence': 0.6999999},
+            {'class_id': 0, 'class_name': '凹凸', 'confidence': 0.2},
+            {'class_id': 5, 'class_name': '铜瘤', 'confidence': 0.1},
+        ]
+        self.write_predictions()
+        report = self.run_organizer()
+        self.assertEqual(report['organized_per_class']['凹凸'], 1)
+        self.assertEqual(report['organized_per_class']['压坑(other)'], 1)
+        self.assertTrue((self.output / 'by_top1/压坑(other)/b/same.png').exists())
+        self.assertFalse((self.output / 'by_top1/凹凸(other)').exists())
+
+    def test_generated_other_name_collision_rejected_before_copy(self):
+        # Never merge uncertain predictions with a real class having the
+        # same name, even when the classes differ only by Windows case.
+        self.labels = ['凹凸', '凹凸(other)', '压坑', '异物', '拖尾', '铜瘤', '黑点']
+        self.labels_file.write_text(
+            '\n'.join(f'{i}:{label}' for i, label in enumerate(self.labels)),
+            encoding='utf-8',
+        )
+        with self.assertRaisesRegex(ValueError, 'collide'):
+            self.run_organizer()
+        self.assertFalse(self.output.exists())
 
     def test_missing_or_duplicate_predictions_fail_before_copying(self):
         for rows in (self.rows[:1], self.rows + self.rows[:1]):
