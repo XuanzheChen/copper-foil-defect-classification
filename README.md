@@ -1,5 +1,7 @@
 # Copper Foil Defect Classification (Standalone)
 
+[**English**](README.md) | [**简体中文**](README.zh-CN.md)
+
 Cross-platform, standalone **200 × 200 grayscale copper-foil image classification** based on ConvNeXt V2. This branch is intended for independent local or server use **without the original experiment archive, SSH synchronization, experiment wrapper, or fixed server paths**.
 
 > **Branch:** `portable/standalone` (maintained separately from `main`). The existing scientific preprocessing and model/checkpoint semantics are preserved. An automatic Git/CUDA-aware installer is included for Windows and Linux; manual installation remains available as a fallback.
@@ -32,6 +34,43 @@ if ($LASTEXITCODE -eq 0) {
 - To preview automatic CUDA selection: `bash install.sh --dry-run` / `.\install.ps1 -DryRun` (the launchers may still provision uv/Python)
 - To switch CPU/CUDA wheel profiles: add `--recreate-env` / `-RecreateEnv` (only Copper-managed virtual environments are eligible)
 - If GitHub HTTPS authentication is configured instead of SSH, use the HTTPS clone URL and optionally `--repo-url` / `-RepoUrl` when cloning through the installer.
+
+### Installer command reference (run in the checked-out project directory)
+
+The entry points are **`bash install.sh` on Linux** and **`powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1` on Windows**. The command-line options use different spellings:
+
+| Operation | Linux (Bash) | Windows (PowerShell) |
+| --- | --- | --- |
+| Automatic GPU/CPU installation | `bash install.sh` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1` |
+| Force CPU-only | `bash install.sh --backend cpu` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -Backend cpu` |
+| Select a tested CUDA wheel | `bash install.sh --backend cu126` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -Backend cu126` |
+| Select GPU index | `bash install.sh --gpu-index 1` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -GpuIndex 1` |
+| Clone to a new, empty directory | `bash install.sh --target ~/copper-copy` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -Target D:\\copper-copy` |
+| Fetch and fast-forward this branch | `bash install.sh --update` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -Update` |
+| Rebuild installer-managed environment | `bash install.sh --recreate-env` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -RecreateEnv` |
+| Preview planned changes | `bash install.sh --dry-run` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -DryRun` |
+
+Supported profile names: `auto` (default), `cpu`, `cu118`, `cu126`, `cu128`. All non-CPU profiles require a compatible GPU and NVIDIA driver. An unsupported detected NVIDIA GPU **does not silently fall back to CPU**. `--update` / `-Update` refuses to change a dirty Git working tree; `--recreate-env` / `-RecreateEnv` acts only on the Copper-managed `.venv`. The shell launchers may install **uv and Python 3.10 even in dry-run mode**; preinstall uv and Python and invoke `scripts/install/bootstrap.py --dry-run` if avoiding such downloads is essential. For a different authenticated Git URL, use `--repo-url` / `-RepoUrl`. Never embed GitHub credentials in URLs.
+
+### After installation: use the isolated Python (no activation required)
+
+Linux, after `cd copper-foil-defect-classification`:
+
+```bash
+.venv/bin/python scripts/copper.py --help
+.venv/bin/python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+cat .venv/copper-install-report.json
+```
+
+Windows PowerShell, after `cd copper-foil-defect-classification`:
+
+```powershell
+.\\.venv\\Scripts\\python.exe scripts\\copper.py --help
+.\\.venv\\Scripts\\python.exe -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+Get-Content .\\.venv\\copper-install-report.json
+```
+
+For subsequent training, evaluation, inference and organizing commands in sections 4–7, use the corresponding `.venv` Python path in place of plain `python` (or activate the environment first). The installer performs its own dependency, tensor and 200×200 model-forward checks but **does not download datasets or trained checkpoints**.
 
 Installation reports are written to `.venv/copper-install-report.json`. The installer does not download datasets or trained checkpoints. See **[INSTALLER.md](INSTALLER.md)** for the full platform support table, driver thresholds, private repository authentication, safety rules and troubleshooting. The manual instructions in section 2 are kept for users who cannot run the automatic launcher.
 
