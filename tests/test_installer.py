@@ -56,6 +56,13 @@ class ProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(mod.InstallError, "requires NVIDIA driver"):
             mod.choose_profile("cu128", self.gpu("12.0", "570.64"), "Windows", PROFILES)
 
+    def test_public_repository_uses_https_by_default(self):
+        self.assertEqual(
+            mod.REPO_URL,
+            "https://github.com/XuanzheChen/copper-foil-defect-classification.git",
+        )
+        self.assertTrue(mod.repo_origin_matches(mod.REPO_URL))
+
     def test_origin_never_accepts_embedded_tokens_or_other_repos(self):
         for url in (
             "git@github.com:XuanzheChen/copper-foil-defect-classification.git",

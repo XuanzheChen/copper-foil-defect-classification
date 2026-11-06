@@ -5,7 +5,7 @@
 ## 0. 前置条件与认证
 
 - **必须有 Git**（Windows 可安装 Git for Windows；Linux 使用发行版包管理器）。
-- 必须能够使用自己的 **GitHub SSH 密钥** 或 **HTTPS 凭据管理器**访问私有仓库 `XuanzheChen/copper-foil-defect-classification`；不接受带 token/password 的 URL，不在文件中保存访问凭据。
+- 仓库现已设为 **Public**：默认使用 **HTTPS Git clone**，无需 SSH Key 或 GitHub 登录。仅自愿使用 SSH 地址时才需要配置 SSH Key。不接受带 token/password 的 URL，不在文件中保存凭据。
 - 支持 **Windows 10/11 x64、Linux x86-64**（Linux 使用 glibc 2.28 或更新版本）；macOS/WSL/ARM64/ROCm 不在本安装器的验收范围内。
 - 需要能够访问 GitHub、Astral uv 和 PyTorch 包索引。第一次安装将下载 Python、PyTorch 与依赖，可能占用较多网络流量和磁盘空间。
 - 默认选用用户级 `uv` 管理的 **Python 3.10** 并在项目目录生成 `.venv`，**不使用管理员权限、不更改系统 Python/Conda**。
@@ -18,24 +18,31 @@
 
 ```bash
 git clone --depth 1 --single-branch --branch portable/standalone \
-  git@github.com:XuanzheChen/copper-foil-defect-classification.git
+  https://github.com/XuanzheChen/copper-foil-defect-classification.git
 bash copper-foil-defect-classification/install.sh
 ```
 
 **Windows PowerShell**：
 
 ```powershell
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 if ($LASTEXITCODE -eq 0) {
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\copper-foil-defect-classification\install.ps1
 }
 ```
 
-若 GitHub 使用 HTTPS 凭据，请将 clone URL 改为 `https://github.com/XuanzheChen/copper-foil-defect-classification.git`。PowerShell 的 `-ExecutionPolicy Bypass` 仅作用于上述单次子进程；不要为此修改系统级执行策略。
+HTTPS 地址是本仓库及安装器的**默认方式**。PowerShell 的 `-ExecutionPolicy Bypass` 仅作用于上述单次子进程；不要为此修改系统级执行策略。**注意：PowerShell 的 `$LASTEXITCODE` 和花括号语法不能直接粘贴到 CMD 中。**
+
+**Windows CMD：**请先执行克隆，确认成功后再运行安装器（CMD 不支持 PowerShell 的 `if ($LASTEXITCODE -eq 0) { ... }` 语法）：
+
+```cmd
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\copper-foil-defect-classification\install.ps1"
+```
 
 在现有 `portable/standalone` 仓库根目录内也可直接运行 `bash install.sh`（Linux）或 `powershell.exe -File .\install.ps1`（Windows，须符合本机执行策略）。
 
-**只持有安装脚本，但不想预先 clone 的情况：**先将仓库中的 `install.sh` 或 `install.ps1` 及其 `scripts/install/` 同目录结构复制到临时目录，然后使用 `--target` / `-Target` 指定空目录；安装器将直接克隆指定 GitHub 分支后安装。由于仓库私有，不能通过未经认证的公共 raw URL 直接下载该启动脚本。
+**只持有安装脚本，但不想预先 clone 的情况：**先将仓库中的 `install.sh` 或 `install.ps1` 及其 `scripts/install/` 同目录结构复制到临时目录，然后使用 `--target` / `-Target` 指定空目录；安装器将通过 HTTPS 克隆指定 GitHub 分支后安装。项目公开后可从 GitHub 获取安装脚本，但执行前请自行审阅。
 
 ## 2. 自动选择 CUDA 配置
 
@@ -67,7 +74,7 @@ CPU 自动模式仅在 **没有可用 `nvidia-smi`** 时使用，并明确打印
 
 `--dry-run` 保证不克隆项目、不建立 `.venv`、不安装 PyTorch，但启动脚本仍会在需要时安装 **uv 本身和 Python 3.10**；如果要求绝对零下载，请先自行准备 uv/Python，再直接运行 `python scripts/install/bootstrap.py --dry-run`。
 
-支持 `--repo-url` / `-RepoUrl` 切换 GitHub 的 SSH 或 HTTPS 认证方式：
+默认克隆地址为无需认证的 HTTPS。若已经配置 GitHub SSH Key，也可以用 `--repo-url` / `-RepoUrl` 改用 SSH；指定 HTTPS 地址同样受支持：
 
 ```bash
 bash install.sh --target ~/copper-standalone --repo-url https://github.com/XuanzheChen/copper-foil-defect-classification.git
@@ -106,11 +113,11 @@ Windows PowerShell：
 .\.venv\Scripts\python.exe scripts\copper.py train --data .\data\copper --labels .\configs\class_labels_csd.txt --output .\outputs\train
 ```
 
-数据集与权重的准备、训练/测试、单图/批量推理以及预测数据整理模板参见根目录 [`README.md`](README.md)。安装器**不会下载数据集和训练权重**，也不会隐式开始训练。
+数据集、**Meta 官方预训练权重下载链接**、训练/测试、单图/批量推理及预测数据整理模板参见根目录 [`README.md`](README.md) 或 [`README.zh-CN.md`](README.zh-CN.md)。安装器**不会下载数据集和训练权重**，也不会隐式开始训练。
 
 ## 5. 故障排查与验证边界
 
-- **Git clone 报权限错误**：确认 GitHub 授权和私有仓库 SSH/HTTPS 凭据。不要在 `--repo-url` 中直接嵌入 token。
+- **Git clone 报 `Permission denied (publickey)`**：这是 SSH 认证错误。公开仓库请使用本文的 HTTPS clone 地址，无需 SSH Key。不要在 `--repo-url` 中嵌入 token。
 - **找不到 GPU / CUDA 驱动太旧**：检查 `nvidia-smi`；更新驱动或明确选择 CPU。安装器不会帮你修改驱动。
 - **已安装 CUDA wheel 但 Smoke Test 失败**：查看错误，检查 GPU Compute Capability、实际设备运算和 wheel；失败不会写入“已验证成功”报告。
 - **依赖下载失败**：检查 GitHub、`astral.sh`、PyTorch wheel index、代理和证书。失败后可重复运行，不会清除已有数据。

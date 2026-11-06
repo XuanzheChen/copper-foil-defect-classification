@@ -8,22 +8,29 @@ Cross-platform, standalone **200 × 200 grayscale copper-foil image classificati
 
 ## 0. Quick start: automatic installation
 
-The repository is **private**: Git must already be installed and authenticated to GitHub (SSH key or HTTPS credential manager). The launcher can automatically install user-level `uv` and managed Python 3.10, create an isolated project `.venv`, choose PyTorch `cu118`, `cu126`, `cu128`, or CPU according to NVIDIA GPU compute capability and driver requirements, and run an actual model-forward smoke test. It does not modify your system Python or Conda environment.
+The repository is **public**: Git must be installed, but **HTTPS cloning requires no GitHub login or SSH key**. The launcher can automatically install user-level `uv` and managed Python 3.10, create an isolated project `.venv`, choose PyTorch `cu118`, `cu126`, `cu128`, or CPU according to NVIDIA GPU compute capability and driver requirements, and run an actual model-forward smoke test. It does not modify your system Python or Conda environment.
 
 **Linux (Bash):**
 
 ```bash
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 bash copper-foil-defect-classification/install.sh
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 if ($LASTEXITCODE -eq 0) {
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\copper-foil-defect-classification\install.ps1
 }
+```
+
+**Windows (Command Prompt / CMD):** run each line separately, and only run the installer after the clone succeeds. CMD does **not** support PowerShell's `if ($LASTEXITCODE -eq 0) { ... }` syntax.
+
+```cmd
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\copper-foil-defect-classification\install.ps1"
 ```
 
 **Already cloned?** In the `portable/standalone` repository root run `bash install.sh` on Linux, or `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1` on Windows.
@@ -33,7 +40,7 @@ if ($LASTEXITCODE -eq 0) {
 - To safely update the standalone branch: `bash install.sh --update` / `.\install.ps1 -Update`
 - To preview automatic CUDA selection: `bash install.sh --dry-run` / `.\install.ps1 -DryRun` (the launchers may still provision uv/Python)
 - To switch CPU/CUDA wheel profiles: add `--recreate-env` / `-RecreateEnv` (only Copper-managed virtual environments are eligible)
-- If GitHub HTTPS authentication is configured instead of SSH, use the HTTPS clone URL and optionally `--repo-url` / `-RepoUrl` when cloning through the installer.
+- HTTPS is the default for this public repository and for the installer's own `--target` clone. SSH is optional for users who have configured a GitHub SSH key; use `--repo-url` / `-RepoUrl` to override the installer clone URL.
 
 ### Installer command reference (run in the checked-out project directory)
 
@@ -50,7 +57,7 @@ The entry points are **`bash install.sh` on Linux** and **`powershell.exe -NoPro
 | Rebuild installer-managed environment | `bash install.sh --recreate-env` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -RecreateEnv` |
 | Preview planned changes | `bash install.sh --dry-run` | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -DryRun` |
 
-Supported profile names: `auto` (default), `cpu`, `cu118`, `cu126`, `cu128`. All non-CPU profiles require a compatible GPU and NVIDIA driver. An unsupported detected NVIDIA GPU **does not silently fall back to CPU**. `--update` / `-Update` refuses to change a dirty Git working tree; `--recreate-env` / `-RecreateEnv` acts only on the Copper-managed `.venv`. The shell launchers may install **uv and Python 3.10 even in dry-run mode**; preinstall uv and Python and invoke `scripts/install/bootstrap.py --dry-run` if avoiding such downloads is essential. For a different authenticated Git URL, use `--repo-url` / `-RepoUrl`. Never embed GitHub credentials in URLs.
+Supported profile names: `auto` (default), `cpu`, `cu118`, `cu126`, `cu128`. All non-CPU profiles require a compatible GPU and NVIDIA driver. An unsupported detected NVIDIA GPU **does not silently fall back to CPU**. `--update` / `-Update` refuses to change a dirty Git working tree; `--recreate-env` / `-RecreateEnv` acts only on the Copper-managed `.venv`. The shell launchers may install **uv and Python 3.10 even in dry-run mode**; preinstall uv and Python and invoke `scripts/install/bootstrap.py --dry-run` if avoiding such downloads is essential. For optional SSH transport (requires a configured GitHub SSH key), use `--repo-url` / `-RepoUrl` with the matching SSH address. Never embed GitHub credentials in URLs.
 
 ### After installation: use the isolated Python (no activation required)
 
@@ -72,7 +79,7 @@ Get-Content .\\.venv\\copper-install-report.json
 
 For subsequent training, evaluation, inference and organizing commands in sections 4–7, use the corresponding `.venv` Python path in place of plain `python` (or activate the environment first). The installer performs its own dependency, tensor and 200×200 model-forward checks but **does not download datasets or trained checkpoints**.
 
-Installation reports are written to `.venv/copper-install-report.json`. The installer does not download datasets or trained checkpoints. See **[INSTALLER.md](INSTALLER.md)** for the full platform support table, driver thresholds, private repository authentication, safety rules and troubleshooting. The manual instructions in section 2 are kept for users who cannot run the automatic launcher.
+Installation reports are written to `.venv/copper-install-report.json`. The installer does not download datasets or trained checkpoints. See **[INSTALLER.md](INSTALLER.md)** for the full platform support table, driver thresholds, optional Git authentication, safety rules and troubleshooting. The manual instructions in section 2 are kept for users who cannot run the automatic launcher.
 
 ## 1. Capabilities and entry points
 
@@ -100,7 +107,7 @@ The `scripts/copper.py` front end invokes the existing model implementation rath
 
 ```bash
 git clone --depth 1 --single-branch --branch portable/standalone \
-  git@github.com:XuanzheChen/copper-foil-defect-classification.git
+  https://github.com/XuanzheChen/copper-foil-defect-classification.git
 cd copper-foil-defect-classification
 python3.10 -m venv .venv
 source .venv/bin/activate
@@ -126,7 +133,7 @@ python -m pip install -r requirements.txt
 ### Windows (PowerShell)
 
 ```powershell
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 cd copper-foil-defect-classification
 py -3.10 -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -166,7 +173,7 @@ nvidia-smi
 python -c "import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0)); print(torch.ones(4,device='cuda').sum().item())"
 ```
 
-**Security:** this is a private repository. Authenticate with an SSH deploy key or Git Credential Manager. Do not embed access tokens in scripts or commit them. Windows users may substitute the authenticated HTTPS clone URL.
+**Security:** the repository is public. Read-only HTTPS cloning works without authentication; optional SSH cloning requires a properly configured GitHub SSH key. Never embed access tokens in scripts or URLs.
 
 ## 3. Dataset and class labels
 
@@ -211,6 +218,47 @@ The commands below work in both Bash and PowerShell when run from the repository
 ```bash
 python scripts/copper.py train --data ./data/copper --labels ./configs/class_labels_csd.txt --model convnextv2_tiny --epochs 200 --batch-size 32 --update-freq 4 --output ./outputs/train
 ```
+
+### Official pretrained weights: where to download
+
+**Recommended for the default `--model convnextv2_tiny`:** the official **ConvNeXt V2-Tiny ImageNet-1K fine-tuned EMA checkpoint** (source resolution 224×224), hosted by **Meta**. This is the ImageNet initialization for `--pretrained`—**not** a copper-defect-trained checkpoint.
+
+| Model / purpose | Trusted download |
+| --- | --- |
+| **ConvNeXt V2-Tiny, ImageNet-1K fine-tuned EMA** (recommended default) | [Official Tiny checkpoint, `convnextv2_tiny_1k_224_ema.pt`](https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt) |
+| ConvNeXt V2-Tiny, FCMAE self-supervised pretraining (alternative starting point) | [Official FCMAE Tiny checkpoint, `convnextv2_tiny_1k_224_fcmae.pt`](https://dl.fbaipublicfiles.com/convnext/convnextv2/pt_only/convnextv2_tiny_1k_224_fcmae.pt) |
+| Other sizes and ImageNet-22K variants | [Meta's official ConvNeXt V2 model zoo](https://github.com/facebookresearch/ConvNeXt-V2#results-and-pre-trained-models) |
+
+**Download to `weights/`** from the project root:
+
+Linux (Bash):
+
+```bash
+mkdir -p weights
+curl -fL --retry 3 \
+  "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" \
+  -o weights/convnextv2_tiny_1k_224_ema.pt
+ls -lh weights/convnextv2_tiny_1k_224_ema.pt
+```
+
+Windows (PowerShell):
+
+```powershell
+New-Item -ItemType Directory -Force .\weights | Out-Null
+Invoke-WebRequest -Uri "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" -OutFile ".\weights\convnextv2_tiny_1k_224_ema.pt"
+Get-Item ".\weights\convnextv2_tiny_1k_224_ema.pt" | Select-Object Name,Length
+```
+
+Windows (CMD):
+
+```cmd
+mkdir weights
+curl.exe -fL --retry 3 "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" --output "weights\convnextv2_tiny_1k_224_ema.pt"
+```
+
+You may also download the checkpoint in a browser and save it under `weights/` with exactly that filename. **The installer does not download pretrained weights automatically.** Keep weights outside Git. Although Meta's checkpoint was trained at 224×224, the project's supervised copper pipeline still requires **200×200** input; do not resize the dataset just to match the checkpoint filename. The fine-tuning code drops incompatible ImageNet classifier-head parameters and initializes a new task head. Other architectures (including customized Tiny variants) may only partially match these weights, so check the reported missing/unexpected keys.
+
+For inference or evaluation, use a **Copper-trained** `checkpoint-best.pth` via `--checkpoint`, not this ImageNet initialization. Only load weight files from trusted sources, since PyTorch checkpoint deserialization can be unsafe.
 
 Fine-tune from **compatible** ImageNet pretrained ConvNeXt V2 weights:
 
@@ -345,7 +393,7 @@ The seven-class `deployment/minimal/` packaging files are tied to a particular h
 
 ## 9. Maintenance and troubleshooting
 
-- **Git permissions:** repository is private; configure GitHub SSH/HTTPS authentication before cloning.
+- **Git clone:** this public repository can be cloned over HTTPS without login. `Permission denied (publickey)` means an SSH URL was used without a configured GitHub SSH key; switch to the HTTPS URL above.
 - **GPU unavailable:** inspect `nvidia-smi`, the NVIDIA driver, PyTorch wheel and `torch.cuda.is_available()`; specify `--device cpu` for supported CPU tasks.
 - **Out of memory:** decrease batch size and worker count; keep effective batch/lr scaling in mind.
 - **Dataset mismatch:** ensure every split contains the same class directories with identical labels/order, and 200×200 images.

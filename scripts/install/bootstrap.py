@@ -6,7 +6,8 @@ interpreter. This Python module handles safe Git operations, CUDA selection,
 virtualenv setup, dependency installation, and smoke verification.
 
 Run from a checked-out portable/standalone copy or with --target to clone into
-another directory. Git authentication is handled by the user's Git client.
+another directory. HTTPS cloning of the public repository needs no SSH key;
+SSH cloning remains optional with a properly configured GitHub key.
 """
 from __future__ import annotations
 

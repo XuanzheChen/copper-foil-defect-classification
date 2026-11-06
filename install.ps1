@@ -1,5 +1,5 @@
 # Copper standalone installer (Windows PowerShell 5.1+ / PowerShell 7+).
-# git must already be installed and authorized to access the private repository.
+# Git is required. Public HTTPS clone needs no GitHub SSH key or login.
 [CmdletBinding()]
 param(
     [string]$Target,
@@ -19,7 +19,7 @@ if ($PSVersionTable.PSEdition -eq 'Core' -and -not [System.Runtime.InteropServic
     throw 'install.ps1 supports Windows only. On Linux use install.sh.'
 }
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-    throw 'Git is required and must be authorized to access the private Copper repository.'
+    throw 'Git is required to clone the public Copper repository.'
 }
 
 $uvCommand = Get-Command uv -ErrorAction SilentlyContinue

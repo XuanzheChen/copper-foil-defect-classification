@@ -10,7 +10,7 @@
 
 ### 前置条件
 
-- 已安装 **Git**，并且当前账号可以访问私有仓库 `XuanzheChen/copper-foil-defect-classification`。使用 GitHub SSH Key，或已配置 Git Credential Manager 的 HTTPS 认证；**不要将 Token 写入命令、URL 或提交到仓库**。
+- 已安装 **Git**。当前仓库已设为 **Public**，使用本 README 给出的 **HTTPS 地址克隆无需登录 GitHub，也无需配置 SSH Key**。如果自愿改用 SSH 地址，才需要先配置 GitHub SSH 公钥；不要将 Token 写入命令、URL 或提交到仓库。
 - 安装器支持 **Windows 10/11 x64** 或 **Linux x86-64**（Linux 需要 glibc ≥ 2.28）。macOS、ARM64、ROCm 和 WSL 不属于当前验收范围。
 - 第一次安装需要网络连接 GitHub、Astral uv 和 PyTorch 软件包源；CUDA 版依赖体积可能较大。
 - 安装器使用用户级 `uv` 管理 **Python 3.10**，在项目目录创建 `.venv/`；不要求管理员权限、不改系统 Python/Conda、不安装系统级 CUDA Toolkit。
@@ -24,7 +24,7 @@
 
 ```bash
 git clone --depth 1 --single-branch --branch portable/standalone \
-  git@github.com:XuanzheChen/copper-foil-defect-classification.git
+  https://github.com/XuanzheChen/copper-foil-defect-classification.git
 bash copper-foil-defect-classification/install.sh
 ```
 
@@ -39,7 +39,7 @@ bash install.sh
 在 PowerShell 终端执行：
 
 ```powershell
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 if ($LASTEXITCODE -eq 0) {
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\copper-foil-defect-classification\install.ps1
 }
@@ -51,11 +51,16 @@ if ($LASTEXITCODE -eq 0) {
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-`-ExecutionPolicy Bypass` 仅用于当前启动的 PowerShell 子进程，不会永久修改系统执行策略。如果使用 HTTPS 凭据管理器而非 SSH，请把克隆地址改为：
+`-ExecutionPolicy Bypass` 仅用于当前启动的 PowerShell 子进程，不会永久修改系统执行策略。**上述 `if ($LASTEXITCODE -eq 0) { ... }` 仅适用于 PowerShell，不要粘贴到 CMD 中。**
 
-```text
-https://github.com/XuanzheChen/copper-foil-defect-classification.git
+如果当前终端提示符形如 `C:\\Users\\Administrator\\Desktop\\copper>`，说明正在使用 **Windows CMD**，请依次执行下面两条命令，**确认克隆成功后**再执行安装器：
+
+```cmd
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\\copper-foil-defect-classification\\install.ps1"
 ```
+
+如果 CMD 克隆失败，先处理 Git 错误，不要继续执行第二条命令。
 
 ### 自动安装器命令速查
 
@@ -79,7 +84,7 @@ https://github.com/XuanzheChen/copper-foil-defect-classification.git
 - `--update` / `-Update` 仅在工作区无未提交/未跟踪文件时执行 `git fetch` 与 `git merge --ff-only`，不会强制覆盖修改。
 - `--recreate-env` / `-RecreateEnv` 只会重建由 Copper 安装器标记管理的 `.venv`，不会删除数据集、权重或其他虚拟环境。
 - `--dry-run` / `-DryRun` 不克隆项目、不安装项目依赖，但启动脚本在缺少 uv/Python 时**仍可能先下载 uv 和 Python 3.10**。要完全避免下载，请自行准备好相应环境，再直接运行 `python scripts/install/bootstrap.py --dry-run`。
-- 如需采用 GitHub HTTPS 认证安装到另一空目录，可加 `--repo-url https://github.com/XuanzheChen/copper-foil-defect-classification.git`（Windows 对应 `-RepoUrl`）。
+- 安装器在 `--target` / `-Target` 克隆新目录时也默认使用 **HTTPS**。如自行配置了 SSH Key 并希望使用 SSH，可显式指定 `--repo-url git@github.com:XuanzheChen/copper-foil-defect-classification.git`（Windows 对应 `-RepoUrl`）。
 - 安装器不会下载数据集、ImageNet 预训练权重或已训练的铜箔分类模型，也不会自动开始训练。
 - 安装失败后可以查看错误并在相同配置下重试；只有真实安装及验证通过才会报告成功。
 
@@ -131,7 +136,7 @@ Get-Content .\.venv\copper-install-report.json
 
 ```bash
 git clone --depth 1 --single-branch --branch portable/standalone \
-  git@github.com:XuanzheChen/copper-foil-defect-classification.git
+  https://github.com/XuanzheChen/copper-foil-defect-classification.git
 cd copper-foil-defect-classification
 python3.10 -m venv .venv
 source .venv/bin/activate
@@ -157,7 +162,7 @@ python -m pip install -r requirements.txt
 ### Windows PowerShell
 
 ```powershell
-git clone --depth 1 --single-branch --branch portable/standalone git@github.com:XuanzheChen/copper-foil-defect-classification.git
+git clone --depth 1 --single-branch --branch portable/standalone https://github.com/XuanzheChen/copper-foil-defect-classification.git
 cd copper-foil-defect-classification
 py -3.10 -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -246,6 +251,50 @@ configs/class_labels_csd.txt
 ```bash
 python scripts/copper.py train --data ./data/copper --labels ./configs/class_labels_csd.txt --model convnextv2_tiny --epochs 200 --batch-size 32 --update-freq 4 --output ./outputs/train
 ```
+
+### 预训练权重在哪里下载？（Meta 官方托管）
+
+**默认模型推荐：**本项目常用 `convnextv2_tiny` 模型，其推荐初始化权重为 **ConvNeXt V2-Tiny ImageNet-1K 微调版 EMA 权重**。权重由 **Meta 官方文件服务器**提供，不由本仓库重新托管；用户可直接下载，不必自行训练 ImageNet 模型。
+
+| 权重 | 官方下载地址 | 用途 |
+| --- | --- | --- |
+| **ConvNeXt V2-Tiny ImageNet-1K EMA（推荐）** | [下载 `convnextv2_tiny_1k_224_ema.pt`](https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt) | 训练时通过 `--pretrained` 加载作为初始化 |
+| ConvNeXt V2-Tiny FCMAE 自监督预训练 | [下载 `convnextv2_tiny_1k_224_fcmae.pt`](https://dl.fbaipublicfiles.com/convnext/convnextv2/pt_only/convnextv2_tiny_1k_224_fcmae.pt) | 可选替代初始化，**不是** ImageNet-1K 分类微调模型 |
+| 其它规格与 ImageNet-22K 权重 | [Meta 官方 ConvNeXt V2 权重总表](https://github.com/facebookresearch/ConvNeXt-V2#results-and-pre-trained-models) | 选择与当前模型结构相匹配的架构与权重 |
+
+**下载方式一：Linux Bash**（在项目根目录执行）
+
+```bash
+mkdir -p weights
+curl -fL --retry 3 \
+  "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" \
+  -o weights/convnextv2_tiny_1k_224_ema.pt
+ls -lh weights/convnextv2_tiny_1k_224_ema.pt
+```
+
+**下载方式二：Windows PowerShell**
+
+```powershell
+New-Item -ItemType Directory -Force .\weights | Out-Null
+Invoke-WebRequest -Uri "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" -OutFile ".\weights\convnextv2_tiny_1k_224_ema.pt"
+Get-Item ".\weights\convnextv2_tiny_1k_224_ema.pt" | Select-Object Name,Length
+```
+
+**下载方式三：Windows CMD**（适合使用 `C:\Users\...\> ` 提示符的终端）
+
+```cmd
+mkdir weights
+curl.exe -fL --retry 3 "https://dl.fbaipublicfiles.com/convnext/convnextv2/im1k/convnextv2_tiny_1k_224_ema.pt" --output "weights\convnextv2_tiny_1k_224_ema.pt"
+```
+
+也可以直接点击上表的官方链接，在浏览器中保存到项目的 `weights/` 目录，并命名为 `convnextv2_tiny_1k_224_ema.pt`。**自动安装器只负责代码、Python 和软件依赖，不会自动下载这些权重。** `weights/` 已被 Git 忽略，无须将大型权重提交到仓库。
+
+**特别注意：**文件名中的 `224` 是权重原始 ImageNet 训练分辨率，本项目铜箔数据依然必须使用 **200×200**，不要因此改写预处理。微调时，原模型会针对铜箔分类任务重置不匹配的 ImageNet 分类头；其它自定义模型结构可能只能部分复用权重，需留意加载日志中的缺失/多余参数。
+
+- **训练初始化：**`--pretrained ./weights/convnextv2_tiny_1k_224_ema.pt`。
+- **训练恢复：**`--resume` 指向本项目之前保存的训练检查点。
+- **测试或推理：**`--checkpoint` 指向**已经针对铜箔缺陷训练好的** `checkpoint-best.pth`，**不能直接使用 ImageNet 预训练文件替代**。
+- 仅加载来源可信的权重；PyTorch 反序列化不可信检查点可能存在安全风险。
 
 ### 使用兼容的 ImageNet 预训练权重微调
 
@@ -402,7 +451,7 @@ outputs/organized/
 
 ## 9. 常见问题与维护
 
-- **GitHub clone 提示权限不足：**确认已授权访问私有仓库，并配置好 SSH Key 或 HTTPS 凭据；不要在脚本或 URL 中明文保存 Token。
+- **GitHub clone 提示 `Permission denied (publickey)`：**表示你仍使用 `git@github.com:...` SSH 地址且未配置 SSH Key。仓库已公开，直接改用本文的 `https://github.com/...` 地址，不需要登录。
 - **安装器识别不到 GPU：**检查 `nvidia-smi`、驱动版本与 GPU 计算能力；确认使用了支持该硬件的 PyTorch Wheel。需要 CPU 时显式使用 `--backend cpu` / `-Backend cpu`。
 - **显存不足：**优先减少 `--batch-size`、`--workers`，需要维持有效 batch 时再调 `--update-freq`。
 - **已有虚拟环境冲突：**如果 `.venv` 不是 Copper 安装器管理的环境，安装器会拒绝接管，需自行备份并移走。切换 CUDA 档位时使用 `--recreate-env`。

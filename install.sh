@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copper standalone one-command installer (Linux). Run from any working folder.
-# Git access to the private repository is required. No sudo or system Python changes.
+# Public HTTPS Git clone requires no SSH key. No sudo or system Python changes.
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Linux" ]]; then
@@ -8,7 +8,7 @@ if [[ "$(uname -s)" != "Linux" ]]; then
   exit 2
 fi
 if ! command -v git >/dev/null 2>&1; then
-  echo 'ERROR: Git is required to clone the private Copper repository.' >&2
+  echo 'ERROR: Git is required to clone the public Copper repository.' >&2
   exit 2
 fi
 
