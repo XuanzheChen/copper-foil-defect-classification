@@ -27,7 +27,7 @@ from urllib.parse import urlsplit
 
 BRANCH = "portable/standalone"
 REPO = "XuanzheChen/copper-foil-defect-classification"
-REPO_URL = f"git@github.com:{REPO}.git"
+REPO_URL = f"https://github.com/{REPO}.git"
 PROFILE_FILENAME = Path("scripts/install/environment_profiles.json")
 PYTHON_VERSION = (3, 10)
 
