@@ -1,0 +1,1 @@
+git@github-copper-foil:XuanzheChen/copper-foil-defect-classification.git

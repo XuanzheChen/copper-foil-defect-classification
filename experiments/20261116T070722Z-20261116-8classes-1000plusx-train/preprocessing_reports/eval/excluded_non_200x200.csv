@@ -1,0 +1,11 @@
+path,class,width,height,reason
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/26082901526_70850.png,凹凸点,200,204,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/26091001306-4_329752.png,凹凸点,200,210,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/26100360805-R02-U01_84191.png,凹凸点,200,204,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/29083060829-R01-U01_11623.png,凹凸点,200,220,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/29083060829-R01-U01_12304.png,凹凸点,231,246,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/凹凸点/9.17U-1#实验_49388.png,凹凸点,260,236,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/印记/26100710104_156329.png,印记,200,226,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/印记/26100712203_48713.png,印记,200,414,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/异物/26100910105_44912.png,异物,200,202,non_200x200
+/share/data/cxz/20261116-copper-foil-defect-classification-3/val/异物/26100910105_44982.png,异物,200,214,non_200x200
